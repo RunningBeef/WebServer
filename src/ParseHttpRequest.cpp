@@ -176,14 +176,14 @@ ParseHttpRequest::HTTP_CODE ParseHttpRequest::pare_httpRequest(char * buffer,int
                     retCode = parse_header(temp,parseStatus,httpRequest);
                     if(retCode == BAD_REQUEST){
                         return BAD_REQUEST;
-                    } else if(retCode == GET_REQUEST){/*没有请求体*/
+                    } else if(retCode == GET_REQUEST){/*没有请求体,请求报文处理结束，直接返回*/
                         return GET_REQUEST;
                     }
                 }
                 case PARSE_BODY:
                 {
                     retCode = parse_body(temp,httpRequest);
-                    if(retCode == GET_REQUEST){
+                    if(retCode == GET_REQUEST){/*处理结束直接返回*/
                         return GET_REQUEST;
                     }
                     return BAD_REQUEST;
