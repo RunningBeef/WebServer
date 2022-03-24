@@ -12,6 +12,7 @@ std::ostream & operator << (std::ostream & ,const HttpRequest &);/*输出整理�
 
 class HttpRequest{
     friend std::ostream & operator << (std::ostream &,const HttpRequest & );
+public:
     enum HTTP_VERSION{/*HTTP版本*/
         HTTP1_0 = 0,HTTP1_1,VERSION_NOT_SPORT
     };
@@ -19,16 +20,30 @@ class HttpRequest{
         GET = 0,HEAD,POST,PUT,DELETE,OPTIONS,STRACE,CONNECT,METHOD_NOT_SPORT
     };
     enum HTTP_HEADER {/*请求首部字段*/
-        HOST = 0, USER_AGENT, ACCEPT, ACCEPT_LANGUAGE, ACCEPT_ENCODING, CONNECTION,
-        IF_MODIFIED_SINCE, IF_NONE_MATCH, CACHE_CONTROL
+        Host = 0,
+        User_Agent,
+        Connection,
+        Accept_Encoding,
+        Accept_Language,
+        Accept,
+        Cache_Control,
+        Upgrade_Insecure_Requests
     };
-    std::unordered_map<HTTP_HEADER,std::string> httpHeaderMap;/*保存各个首部字段*/
+    static std::unordered_map<std::string, HTTP_HEADER> header_map;
+    struct EnumClassHash {
+        template<typename T>
+        std::size_t operator()(T t) const {
+            return static_cast<std::size_t>(t);
+        }
+    };
 
+public:
     HttpRequest(HTTP_METHOD method = METHOD_NOT_SPORT,std::string url = "",HTTP_VERSION version = VERSION_NOT_SPORT):
     method_(method),url_(url),version_(version),content_(""){};
-    HTTP_METHOD method_;
     HTTP_VERSION version_;
     std::string url_;
     std::string content_;/*报文主体*/
+    HTTP_METHOD method_;
+    std::unordered_map<HTTP_HEADER,std::string,EnumClassHash> headerMap_;/*保存各个首部字段*/
 };
 #endif //RUNNINGBEEF_WEBSERVER_HTTPREQUEST_H
