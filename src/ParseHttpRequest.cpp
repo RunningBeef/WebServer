@@ -117,7 +117,7 @@ ParseHttpRequest::HTTP_CODE ParseHttpRequest::parse_requestLine(char * temp,PARS
 /*处理请求头部字段*/
 /*头部字段名:值CRLF*/
 ParseHttpRequest::HTTP_CODE ParseHttpRequest::parse_header(char * line,PARSE_STATUS & parseStatus,HttpRequest & httpRequest){
-    if (*line == '\0') {
+    if (*line == '\0') {/*头部字段读取完毕*/
         if (httpRequest.method_ == HttpRequest::GET) {
             return GET_REQUEST;
         }
@@ -176,14 +176,17 @@ ParseHttpRequest::HTTP_CODE ParseHttpRequest::pare_httpRequest(char * buffer,int
                     retCode = parse_header(temp,parseStatus,httpRequest);
                     if(retCode == BAD_REQUEST){
                         return BAD_REQUEST;
+                    } else if(retCode == GET_REQUEST){/*没有请求体*/
+                        return GET_REQUEST;
                     }
                 }
                 case PARSE_BODY:
                 {
                     retCode = parse_body(temp,httpRequest);
-                    if(retCode == BAD_REQUEST){
-                        return BAD_REQUEST;
+                    if(retCode == GET_REQUEST){
+                        return GET_REQUEST;
                     }
+                    return BAD_REQUEST;
                 }
                 default:
                 {
