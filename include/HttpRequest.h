@@ -40,10 +40,11 @@ public:
 public:
     HttpRequest(HTTP_METHOD method = METHOD_NOT_SPORT,std::string url = "",HTTP_VERSION version = VERSION_NOT_SPORT):
     method_(method),url_(url),version_(version),content_(""){};
-    HTTP_VERSION version_;
-    std::string url_;
-    std::string content_;/*报文主体*/
     HTTP_METHOD method_;
+    std::string url_;
+    HTTP_VERSION version_;
+    std::string content_;/*报文主体*/
+
     std::unordered_map<HTTP_HEADER,std::string,EnumClassHash> headerMap_;/*保存各个首部字段*/
 };
 #endif //RUNNINGBEEF_WEBSERVER_HTTPREQUEST_H
