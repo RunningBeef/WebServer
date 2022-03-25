@@ -14,6 +14,7 @@
  * 因此我们delte了Mutex的拷贝函数和'='重载
  * 并且对锁的解锁和开锁和类的生命周期绑定在一起
  **/
+
 class Mutex : public Noncopyable{
 public:
     Mutex();
@@ -27,7 +28,7 @@ public: pthread_mutex_t mutex_;
 /*对锁的解锁和开锁和类的生命周期绑定在一起*/
 class MutexGuard{
 public:
-    explicit MutexGuard(Mutex & mutex);
+    explicit MutexGuard(Mutex &mutex);
     ~MutexGuard();
 public:
     Mutex &mutex_;
