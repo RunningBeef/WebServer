@@ -22,7 +22,7 @@ public:
     enum HTTP_HEADER {/*请求首部字段*/
         Host = 0,
         User_Agent,
-        Connection,
+        Connection,/*：keep-alive保持长连接*/
         Accept_Encoding,
         Accept_Language,
         Accept,
