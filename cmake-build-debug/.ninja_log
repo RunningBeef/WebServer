@@ -1,0 +1,7 @@
+# ninja log v5
+904	4300	1648206046819941099	CMakeFiles/RunningBeef_WebServer.dir/src/HttpResponse.cpp.o	ab4a0d6f2d5923f3
+6	4202	1648206046719940836	CMakeFiles/RunningBeef_WebServer.dir/src/ParseHttpRequest.cpp.o	8a23975f3b2fc1a7
+6	904	1648206043419932150	CMakeFiles/RunningBeef_WebServer.dir/src/Condition.cpp.o	5c2908baef9dd049
+3	3774	1648206046279939679	CMakeFiles/RunningBeef_WebServer.dir/src/Socket.cpp.o	4db706294f06507d
+0	3652	1648206046171939395	CMakeFiles/RunningBeef_WebServer.dir/main.cpp.o	819546c95d8fe9a5
+3	904	1648206043411932127	CMakeFiles/RunningBeef_WebServer.dir/src/Mutex.cpp.o	7496509346181c03
