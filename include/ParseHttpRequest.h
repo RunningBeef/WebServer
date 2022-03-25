@@ -34,7 +34,7 @@ class ParseHttpRequest{
     enum HTTP_CODE{NO_REQUEST,GET_REQUEST,BAD_REQUEST,
             FORBIDDEN_REQUEST,INTERNAL_ERROR,CLOSED_CONNECTION};
 
-    
+
     /*0 ~ check_index - 1已经处理完了，check_index ~ read_index - 1还没处理*/
     static LINE_STATUS get_line(char * buffer,int & checked_index,int & read_index);
     static HTTP_CODE parse_requestLine(char * buffer,PARSE_STATUS & parseStatus,HttpRequest & httpRequest);

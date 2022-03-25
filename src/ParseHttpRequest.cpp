@@ -118,7 +118,7 @@ ParseHttpRequest::HTTP_CODE ParseHttpRequest::parse_requestLine(char * temp,PARS
 /*头部字段名:值CRLF*/
 ParseHttpRequest::HTTP_CODE ParseHttpRequest::parse_header(char * line,PARSE_STATUS & parseStatus,HttpRequest & httpRequest){
     if (*line == '\0') {/*头部字段读取完毕*/
-        if (httpRequest.method_ == HttpRequest::GET) {
+        if (httpRequest.method_ == HttpRequest::GET) {/*GET一般不包含body*/
             return GET_REQUEST;
         }
         parseStatus = PARSE_BODY;
