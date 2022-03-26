@@ -48,7 +48,7 @@ void TimerNode::updateCurrentTime(){
     TimerNode::current_src = cur.tv_sec;
 }
 
-
+/*向堆中添加定时器*/
 void TimerManager::addTimerNode(std::shared_ptr<HttpData> & httpData,size_t interval,void (* cbFunc )(std::shared_ptr<HttpData>)) {
     std::shared_ptr<TimerNode> timerNode(new TimerNode(interval,httpData,cbFunc));
     {
@@ -59,9 +59,14 @@ void TimerManager::addTimerNode(std::shared_ptr<HttpData> & httpData,size_t inte
 }
 
 void TimerManager::tick() {
-    TimerNode::updateCurrentTime();
+    TimerNode::updateCurrentTime();/*更新当前时间，方便判断socket是否超时*/
     MutexGuard mutexGuard(mutex_);/*上锁*/
+    int ct = 0;
     while(!timerQueue.empty()){
+        if(++ct == 1000){/*如果统一时刻大量事件超时，一直处理，会影响服务器响应其他socket的Http请求*/
+            std::cout << "超时事件过多！！！" << std::endl;
+            break;
+        }
         std::shared_ptr<TimerNode> temp = timerQueue.top();
         if(temp->isExpired() || temp->isDeleted())
         {
