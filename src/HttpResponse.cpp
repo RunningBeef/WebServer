@@ -27,7 +27,7 @@ std::unordered_map<std::string, MimeType> Mime_map = {
         {"default","text/plain"}
 };
 
-void HttpResponse::appenBuffer(char *buffer) const{
+void HttpResponse::appendBuffer(char *buffer) const{
 
     // 版本
     sprintf(buffer, "%s %d %s\r\n", mVersion,mStatusCode, mStatusMsg.c_str());

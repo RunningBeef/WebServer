@@ -17,6 +17,7 @@ struct MimeType {
     std::string type;
 };
 
+/*媒体资源类型*/
 extern std::unordered_map<std::string, MimeType> Mime_map;
 
 class HttpResponse {
@@ -89,7 +90,7 @@ public:
         return mStatusMsg;
     }
 
-    void appenBuffer(char *) const;
+    void appendBuffer(char *) const;
 
     ~HttpResponse() {
         if (mBody != nullptr)
