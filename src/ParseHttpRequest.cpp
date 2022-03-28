@@ -6,7 +6,7 @@
 #include "../include/ParseHttpRequest.h"
 #include "../include/Util.h"
 
-std::unordered_map<std::string, HttpRequest::HTTP_HEADER> HttpRequest::header_map = {
+std::unordered_map<std::string, HttpRequest::HTTP_HEADER> HttpRequest::static_stringToHeader_map_ = {
         {"HOST",                      HttpRequest::Host},
         {"USER-AGENT",                HttpRequest::User_Agent},
         {"CONNECTION",                HttpRequest::Connection},
@@ -132,7 +132,7 @@ ParseHttpRequest::HTTP_CODE ParseHttpRequest::parse_header(char * line,PARSE_STA
     sscanf(line, "%[^:]:%[^:]", key, value);
 
 
-    decltype(HttpRequest::header_map)::iterator it;
+    decltype(HttpRequest::static_stringToHeader_map_)::iterator it;
     std::string key_s(key);
     std::transform(key_s.begin(), key_s.end(), key_s.begin(), ::toupper);
     std::string value_s(value);
@@ -140,8 +140,8 @@ ParseHttpRequest::HTTP_CODE ParseHttpRequest::parse_header(char * line,PARSE_STA
 //        return NO_REQUEST;
 //    }
 
-    if ((it = HttpRequest::header_map.find(trim(key_s))) != (HttpRequest::header_map.end())) {
-        httpRequest.headerMap_.insert(std::make_pair(it->second, trim(value_s)));
+    if ((it = HttpRequest::static_stringToHeader_map_.find(trim(key_s))) != (HttpRequest::static_stringToHeader_map_.end())) {
+        httpRequest.headerToStringMap_.insert(std::make_pair(it->second, trim(value_s)));
     } else {
         std::cout << "Header no support: " << key << " : " << value << std::endl;
     }

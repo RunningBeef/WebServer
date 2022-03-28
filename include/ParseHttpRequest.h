@@ -15,6 +15,7 @@
 
 
 class ParseHttpRequest{
+public:
     /*从状态机的三种可能状态, 即行的读取状态, 分别表示：读取到一个完整的行、行出错和行数据尚且不完整*/
     enum LINE_STATUS{
         LINE_OK,LINE_MORE,LINE_BAD
