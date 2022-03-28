@@ -114,7 +114,7 @@ void ThreadPool<T>::run() {
 }
 
 template<typename T>
-void ThreadPool<T>::appendTask(T *task) {
+void ThreadPool<T>::appendTask(T task) {
     MutexGuard mutexGuard(mutex_);
     {
         if (task_queue_.size() == max_task_num_) {

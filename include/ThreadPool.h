@@ -18,7 +18,7 @@ class ThreadPool{
 public:
     ThreadPool(int threadNum = 10,int maxTaskNum = 1024);
     ~ThreadPool();
-    void appendTask(T * );
+    void appendTask(T  );
 public:
     /*pthread运行的只能是static函数，
      * 但是你线程想运行的函数run()实际上会用的成员变量如task_queue_,
