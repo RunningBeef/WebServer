@@ -6,21 +6,24 @@
 
 __uint32_t Epoll:: DEFAULT_EVENT = EPOLLIN | EPOLLET | EPOLLONESHOT;
 
-Epoll::Epoll(int size):events(nullptr){
-    max_events = 1024 > size ? 1024 : size;/*设置监听事件数组大小*/
-    epoll_fd = epoll_create(max_events);
-    events = new epoll_event[max_events];
+Epoll::Epoll(int size):events_(nullptr){
+    max_events_ = 1024 > size ? 1024 : size;/*设置监听事件数组大小*/
+    epoll_fd_ = epoll_create(max_events_);
+    events_ = new epoll_event[max_events_];
 }
+
 Epoll::~Epoll() {
-    if (events != nullptr)
-        delete events;
+    if (events_ != nullptr)
+        delete events_;
 }
 
 int Epoll::modFd(int op,int fd,struct epoll_event *event){
-    return epoll_ctl(epoll_fd,op,fd,event);
+
+    return epoll_ctl(epoll_fd_,op,fd,event);
+
 }
 
-int Epoll::wait(struct epoll_event * events ,int timeout){
+int Epoll::wait(int timeout){
 
-    return epoll_wait(epoll_fd,events,max_events,timeout);
+    return epoll_wait(epoll_fd_,events_,max_events_,timeout);
 }
