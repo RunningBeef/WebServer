@@ -2,18 +2,20 @@
 // Created by yonggeng on 3/25/22.
 //
 #include "../include/Timer.h"
-#include <sys/time.h>
+
 
 size_t TimerNode:: DEFAULT_INTERVAL_SEC = 20;
-TimerNode::TimerNode(size_t interval,std::shared_ptr<HttpData> httpData,void (*cbFunc)(std::shared_ptr<HttpData>))
-:httpData_(httpData),deleted_(false),cbFunc_(cbFunc){
+TimerNode::TimerNode(size_t interval,std::shared_ptr<HttpData> httpData,WebServer * webServer,void (* cbFunc_ )(WebServer & , std::shared_ptr<HttpData>))
+:deleted_(false),webserver_(webServer){
     TimerNode::setExpiredTime(TimerNode::DEFAULT_INTERVAL_SEC);
+
 }
 
 /*调用回调函数关闭socket...等资源*/
 TimerNode::~TimerNode(){
+
     if(httpData_){
-        cbFunc_(httpData_);
+        //cbFunc_(webserver_,httpData_);
     }
 }
 
@@ -49,12 +51,12 @@ void TimerNode::updateCurrentTime(){
 }
 
 /*向堆中添加定时器*/
-void TimerManager::addTimerNode(std::shared_ptr<HttpData> & httpData,size_t interval,void (* cbFunc )(std::shared_ptr<HttpData>)) {
-    std::shared_ptr<TimerNode> timerNode(new TimerNode(interval,httpData,cbFunc));
+void TimerManager::addTimerNode(std::shared_ptr<TimerNode> timerNode) {
+
     {
         MutexGuard mutexGuard(mutex_);/*上锁*/
         timerQueue.push(timerNode);
-        httpData->setTimerNode(timerNode);
+        timerNode->httpData_->setTimerNode(timerNode);
     }
 }
 

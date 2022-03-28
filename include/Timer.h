@@ -4,15 +4,22 @@
 
 #ifndef RUNNINGBEEF_WEBSERVER_TIMER_H
 #define RUNNINGBEEF_WEBSERVER_TIMER_H
+
 #include "HttpData.h"
 #include "Mutex.h"
+#include "WebServer.h"
+#include <sys/time.h>
+
 #include <queue>
 #include <deque>
 #include<memory>
 
+class HttpData;
+class WebServer;
+
 class TimerNode{
 public:
-    TimerNode(size_t interval,shared_ptr<HttpData> httpData,void (*cbFunc)(std::shared_ptr<HttpData> ));
+    TimerNode(size_t interval,shared_ptr<HttpData> httpData,WebServer * webServer,void (* cbFunc_ )(WebServer & , std::shared_ptr<HttpData>));
     ~TimerNode();
     bool isExpired();/*是否超时*/
     bool isDeleted();/*是否因为异常或者连接更新，被标记为删除*/
@@ -28,10 +35,11 @@ public:
 public:
     static size_t current_src;/*系统当前时间*/
     static size_t DEFAULT_INTERVAL_SEC;/*默认超时时间*/
-    void (* cbFunc_ )(std::shared_ptr<HttpData> );/*回调函数*/
+    void (* cbFunc_ )(WebServer & , std::shared_ptr<HttpData>);/*回调函数*/
     std::shared_ptr<HttpData> httpData_;/*socket连接数据*/
-
+    Webserver * webserver_;
 private:
+
     bool deleted_;/*惰性删除标记*/
     size_t expiredTime_;/*超时时间*/
 
@@ -47,7 +55,7 @@ class TimerManager{
 public:
 
     /*给堆添加定时器*/
-    void addTimerNode(std::shared_ptr<HttpData> & httpData,size_t interval,void (* cbFunc )(std::shared_ptr<HttpData>));
+    void addTimerNode(std::shared_ptr<TimerNode> timerNode);
     void tick();
 
 private:
