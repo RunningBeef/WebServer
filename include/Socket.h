@@ -13,8 +13,11 @@
 #include<unistd.h>
 #include<stdlib.h>
 #include<errno.h>
+#include<fcntl.h>
 
 class ClientSocket;
+
+int setNonBlocking(int fd) ;
 
 class ServerSocket
 {
@@ -23,7 +26,7 @@ public:
     ~ServerSocket();
     void bind();
     void listen();
-    void accept(ClientSocket & clientSocket);
+    void accept(ClientSocket &clientSocket);
     void setSocketReused();
 public:
     int port_;

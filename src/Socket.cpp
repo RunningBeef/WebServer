@@ -3,6 +3,12 @@
 //
 #include "../include/Socket.h"
 
+int setNonBlocking(int fd) {
+    int old_option = fcntl(fd, F_GETFL);
+    int new_option = old_option | O_NONBLOCK;
+    fcntl(fd, F_SETFL, new_option);
+    return old_option;
+}
 
 /*函数声明时有默认参数，实现的时候就不能加默认参数*/
 ServerSocket::ServerSocket(int port, char *ip) : port_(port), ip_(ip) {
@@ -42,10 +48,9 @@ void ServerSocket::accept(ClientSocket & clientSocket){
     clientSocket.fd_ = ::accept(socket_fd_,(struct sockaddr * )&clientSocket.clientAddr_,&clientSocket.clientAddrlength_);
     if(clientSocket.fd_ < 0){
         std::cout << "error in file " << __FILE__ << " at line " <<  __LINE__ << std::endl;
-        exit(1);
+        throw::std::exception();
     }
     clientSocket.epoll_fd_ = ServerSocket::epoll_fd_;
-
 }
 
 void ServerSocket::setSocketReused()
