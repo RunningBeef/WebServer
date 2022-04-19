@@ -2,29 +2,33 @@
 // Created by yonggeng on 3/26/22.
 //
 
-#ifndef RUNNINGBEEF_WEBSERVER_WEBSERVER_H
-#define RUNNINGBEEF_WEBSERVER_WEBSERVER_H
+//#ifndef RUNNINGBEEF_WEBSERVER_WEBSERVER_H
+//#define RUNNINGBEEF_WEBSERVER_WEBSERVER_H
 
+#pragma once
+
+#include "Timer.h"
 #include "Epoll.h"
 #include "HttpData.h"
+#include "Socket.h"
 #include "ParseHttpRequest.h"
 #include "ParseHttpResponse.h"
-#include "Socket.h"
 #include "ThreadPool.h"
-#include "Timer.h"
 #include <functional>
 #include <exception>
-#include<memory>
+#include <memory>
 
-std::string basePath = "/";
+class HttpData;
+class Epoll;
+class TimerManager;
 
-struct Task{/*封装工作任务*/
-    std::function<void(std::shared_ptr<void>)> function;
-    std::shared_ptr<void> arg;
-};
+extern std::string basePath;
+
+
 
 class WebServer;
-void cbfunc(WebServer & webserver,std::shared_ptr<HttpData> httpData);
+
+void cbfunc(WebServer * webserver,std::shared_ptr<HttpData> httpData);
 
 class WebServer{
 public:
@@ -44,18 +48,17 @@ public:
     /*分配监听事件*/
     std::vector<std::shared_ptr<HttpData>> handleEvents();
 
-
-private:
+public:
     int threadNum_;/*线程个数*/
     int maxTask_;/*任务队列最大存储任务个数*/
     int eventSize_;/*监听事件数量*/
-    ServerSocket serverSocket_;/*服务socket*/
-    ThreadPool<Task> threadPool_;/*线程池*/
-    Epoll epoll_;/*epoll类方法封装*/
-    TimerManager timerManager;/*定时器管理容器*/
+    ServerSocket serverSocket_;/*服haodi务socket*/
+    std::shared_ptr<ThreadPool> threadPool_;/*线程池*/
+    Epoll *epoll_;/*epoll类方法封装*/
+    TimerManager  * timerManager;/*定时器管理容器*/
     std::unordered_map<int,std::shared_ptr<HttpData>> httpDataMap_;/*连接socket*/
 };
 
-#endif //RUNNINGBEEF_WEBSERVER_WEBSERVER_H
-
+//#endif //RUNNINGBEEF_WEBSERVER_WEBSERVER_H
+//
 
