@@ -2,8 +2,12 @@
 // Created by yonggeng on 3/24/22.
 //
 
-#ifndef RUNNINGBEEF_WEBSERVER_UTIL_H
-#define RUNNINGBEEF_WEBSERVER_UTIL_H
+//#ifndef RUNNINGBEEF_WEBSERVER_UTIL_H
+//#define RUNNINGBEEF_WEBSERVER_UTIL_H
+
+#pragma once
+
+
 #include<string>
 /*移除多余 " \t" */
 std::string& ltrim(std::string &str) {
@@ -33,4 +37,4 @@ std::string& trim(std::string& str) {
     return str;
 }
 
-#endif //RUNNINGBEEF_WEBSERVER_UTIL_H
+//#endif //RUNNINGBEEF_WEBSERVER_UTIL_H

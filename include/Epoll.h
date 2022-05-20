@@ -2,8 +2,10 @@
 // Created by yonggeng on 3/25/22.
 //
 
-#ifndef RUNNINGBEEF_WEBSERVER_EPOLL_H
-#define RUNNINGBEEF_WEBSERVER_EPOLL_H
+//#ifndef RUNNINGBEEF_WEBSERVER_EPOLL_H
+//#define RUNNINGBEEF_WEBSERVER_EPOLL_H
+#pragma once
+
 #include <sys/epoll.h>
 #include <memory>
 #include <vector>
@@ -25,4 +27,4 @@ private:
     int epoll_fd_;/*保存epoll_create()返回的内核事件表文件描述符*/
     struct epoll_event * events_;/*保存监听到的就绪事件*/
 };
-#endif //RUNNINGBEEF_WEBSERVER_EPOLL_H
+//#endif //RUNNINGBEEF_WEBSERVER_EPOLL_H

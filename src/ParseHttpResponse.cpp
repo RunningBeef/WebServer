@@ -5,6 +5,47 @@
 #include "../include/ParseHttpResponse.h"
 
 
+char NOT_FOUND_PAGE[] = "<html>\n"
+                        "<head><title>404 Not Found</title></head>\n"
+                        "<body bgcolor=\"white\">\n"
+                        "<center><h1>404 Not Found</h1></center>\n"
+                        "<hr><center>RunningBeef WebServer (Linux)</center>\n"
+                        "</body>\n"
+                        "</html>";
+
+char FORBIDDEN_PAGE[] = "<html>\n"
+                        "<head><title>403 Forbidden</title></head>\n"
+                        "<body bgcolor=\"white\">\n"
+                        "<center><h1>403 Forbidden</h1></center>\n"
+                        "<hr><center>RunningBeef WebServer (Linux)</center>\n"
+                        "</body>\n"
+                        "</html>";
+
+char INDEX_PAGE[] = "<!DOCTYPE html>\n"
+                    "<html>\n"
+                    "<head>\n"
+                    "    <title>Welcome to RunningBeef WebServer!</title>\n"
+                    "    <style>\n"
+                    "        body {\n"
+                    "            width: 35em;\n"
+                    "            margin: 0 auto;\n"
+                    "            font-family: Tahoma, Verdana, Arial, sans-serif;\n"
+                    "        }\n"
+                    "    </style>\n"
+                    "</head>\n"
+                    "<body>\n"
+                    "<h1>Welcome to RunningBeef WebServer!</h1>\n"
+                    "<p>If you see this page, the lc webserver is successfully installed and\n"
+                    "    working. </p>\n"
+                    "\n"
+                    "<p>For online documentation and support please refer to\n"
+                    "    <a href=\"https://github.com/RunningBeef/WebServer\">RunningBeef WebServer</a>.<br/>\n"
+                    "\n"
+                    "<p><em>Thank you for using RunningBeef WebServer.</em></p>\n"
+                    "</body>\n"
+                    "</html>";
+
+
 void ParseHttpResponse::header(std::shared_ptr<HttpData> httpData){
     if(httpData->sharedPtr_httpRequest->getVersion() == HttpRequest::HTTP1_1){
         httpData->sharedPtr_httpResponse->setVersion(HttpRequest::HTTP1_1);
@@ -54,7 +95,8 @@ ParseHttpResponse::FILE_STATUS ParseHttpResponse::get_file(std::shared_ptr<HttpD
 //    std::cout << "文件存在 - ok" << std::endl;
     return FILE_OK;
 }
-void getMime(std::shared_ptr<HttpData> httpData){
+
+void ParseHttpResponse:: getMime(std::shared_ptr<HttpData> httpData){
     std::string filepath = httpData->sharedPtr_httpRequest->getUrl();
     std::string mime;
     int pos;

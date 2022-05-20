@@ -2,8 +2,9 @@
 // Created by yonggeng on 3/25/22.
 //
 
-#ifndef RUNNINGBEEF_WEBSERVER_HTTPRESPONSE_H
-#define RUNNINGBEEF_WEBSERVER_HTTPRESPONSE_H
+//#ifndef RUNNINGBEEF_WEBSERVER_HTTPRESPONSE_H
+//#define RUNNINGBEEF_WEBSERVER_HTTPRESPONSE_H
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -108,5 +109,5 @@ private:
     std::string mFilePath;
     std::unordered_map<std::string, std::string> mHeaders;
 };
-
-#endif //RUNNINGBEEF_WEBSERVER_HTTPRESPONSE_H
+//
+//#endif //RUNNINGBEEF_WEBSERVER_HTTPRESPONSE_H

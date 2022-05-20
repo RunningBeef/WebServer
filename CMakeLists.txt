@@ -1,6 +1,40 @@
 cmake_minimum_required(VERSION 3.21)
 project(RunningBeef_WebServer)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 11)
+set(CXX_FLAGS
+        -Wall
+        -std=c++11
+        -lpthread
+        -Wno-unused-parameter
+        -O3
+        )
 
-add_executable(RunningBeef_WebServer main.cpp include/Socket.h src/Socket.cpp include/Noncopyable.h include/Mutex.h src/Mutex.cpp include/Condition.h src/Condition.cpp include/HttpRequest.h src/HttpRequest.cpp include/ParseHttpRequest.h src/ParseHttpRequest.cpp include/Util.h include/HttpData.h include/HttpResponse.h src/HttpResponse.cpp include/Timer.h src/Timer.cpp src/HttpData.cpp include/Epoll.h src/Epoll.cpp include/ThreadPool.h src/ThreadPool.cpp include/WebServer.h src/WebServer.cpp include/ParseHttpResponse.h src/ParseHttpResponse.cpp)
+link_libraries(pthread)
+
+set(CMAKE_BUILD_TYPE "Release")
+
+set(CMAKE_CXX_COMPILER "g++")
+set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+
+
+set(SOURCE_FILES
+        src/Socket.cpp
+        src/ThreadPool.cpp
+        src/HttpRequest.cpp
+        src/HttpResponse.cpp
+        src/ParseHttpRequest.cpp
+        src/ParseHttpResponse.cpp
+        src/HttpData.cpp
+        src/Timer.cpp
+        src/Epoll.cpp
+        src/WebServer.cpp
+        src/Condition.cpp
+        src/Mutex.cpp
+        main.cpp
+        )
+
+# src/Socket.cpp src/ThreadPool.cpp src/HttpRequest.cpp src/HttpResponse.cpp src/ParseHttpRequest.cpp src/ParseHttpResponse.cpp src/HttpData.cpp src/Timer.cpp src/Epoll.cpp src/WebServer.cpp src/Condition.cpp src/Mutex.cpp main.cpp
+add_executable(RunningBeef_WebServer  ${SOURCE_FILES})#生成可执行文件

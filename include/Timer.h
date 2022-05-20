@@ -2,8 +2,9 @@
 // Created by yonggeng on 3/25/22.
 //
 
-#ifndef RUNNINGBEEF_WEBSERVER_TIMER_H
-#define RUNNINGBEEF_WEBSERVER_TIMER_H
+//#ifndef RUNNINGBEEF_WEBSERVER_TIMER_H
+//#define RUNNINGBEEF_WEBSERVER_TIMER_H
+#pragma once
 
 #include "HttpData.h"
 #include "Mutex.h"
@@ -19,7 +20,7 @@ class WebServer;
 
 class TimerNode{
 public:
-    TimerNode(size_t interval,shared_ptr<HttpData> httpData,WebServer * webServer,void (* cbFunc_ )(WebServer & , std::shared_ptr<HttpData>));
+    TimerNode(size_t interval,std::shared_ptr<HttpData> httpData,WebServer * webServer,void (* cbFunc_ )(WebServer * , std::shared_ptr<HttpData>));
     ~TimerNode();
     bool isExpired();/*是否超时*/
     bool isDeleted();/*是否因为异常或者连接更新，被标记为删除*/
@@ -35,9 +36,9 @@ public:
 public:
     static size_t current_src;/*系统当前时间*/
     static size_t DEFAULT_INTERVAL_SEC;/*默认超时时间*/
-    void (* cbFunc_ )(WebServer & , std::shared_ptr<HttpData>);/*回调函数*/
+    void (* cbFunc_ )(WebServer * , std::shared_ptr<HttpData>);/*回调函数*/
     std::shared_ptr<HttpData> httpData_;/*socket连接数据*/
-    Webserver * webserver_;
+    WebServer * webserver_;
 private:
 
     bool deleted_;/*惰性删除标记*/
@@ -47,7 +48,7 @@ private:
 
 struct TimerCmp{
     bool operator()(std::shared_ptr<TimerNode> & a,std::shared_ptr<TimerNode> & b)const {
-        return a->getExpired() < b->getExpired();
+        return a->getExpiredTime() < b->getExpiredTime();
     }
 };
 /*定时器容器*/
@@ -62,4 +63,4 @@ private:
     Mutex mutex_;
     std::priority_queue<std::shared_ptr<TimerNode>, std::vector<std::shared_ptr<TimerNode>>, TimerCmp> timerQueue;
 };
-#endif //RUNNINGBEEF_WEBSERVER_TIMER_H
+//#endif //RUNNINGBEEF_WEBSERVER_TIMER_H

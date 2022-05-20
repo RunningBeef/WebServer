@@ -11,6 +11,9 @@ HttpData::HttpData(ClientSocket & clientSocket){
 
 }
 
+HttpData::~HttpData() {
+
+}
 /*socket异常或者超时，调用TimerNode的回调函数，立刻关闭map中fd*/
 /*socket更新时，不方便从堆中直接找出这个定时器删除，
  * 而是先断开HttpData和旧的TimerNode的联系
@@ -22,7 +25,7 @@ void HttpData::closeTimerNode()
     std::shared_ptr<TimerNode> temp = weakPtr_TimerNode.lock();
     if(temp){/*如果TimerNode对象还存在*/
         temp->setDeleted();
-        temp->cbFunc_(temp->httpData_);/*调用回调函数关闭socket*/
+        temp->cbFunc_(temp->webserver_,temp->httpData_);/*调用回调函数关闭socket*/
         temp.reset();
     }
 }

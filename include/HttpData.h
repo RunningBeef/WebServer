@@ -1,9 +1,11 @@
 //
 // Created by yonggeng on 3/24/22.
 //
+//
+//#ifndef RUNNINGBEEF_WEBSERVER_HTTPDATA_H
+//#define RUNNINGBEEF_WEBSERVER_HTTPDATA_H
+#pragma once
 
-#ifndef RUNNINGBEEF_WEBSERVER_HTTPDATA_H
-#define RUNNINGBEEF_WEBSERVER_HTTPDATA_H
 #include "Timer.h"
 #include "HttpRequest.h"
 #include "HttpResponse.h"
@@ -32,4 +34,4 @@ private:
     std::weak_ptr<TimerNode> weakPtr_TimerNode;
 
 };
-#endif //RUNNINGBEEF_WEBSERVER_HTTPDATA_H
+//#endif //RUNNINGBEEF_WEBSERVER_HTTPDATA_H

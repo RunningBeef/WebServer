@@ -3,20 +3,21 @@
 //
 
 #include "../include/WebServer.h"
+std::string basePath = "/";
 
-void cbfunc(WebServer & webserver,std::shared_ptr<HttpData> httpData){
+void cbfunc(WebServer * webserver,std::shared_ptr<HttpData> httpData){
     if(httpData){
         struct epoll_event * event;
         event->events = Epoll::DEFAULT_EVENT;
         int socket_fd = event->data.fd = httpData->sharedPtr_clientSocket->fd_;
-        webserver.epoll_.modFd(EPOLL_CTL_DEL,socket_fd,event);
+        webserver->epoll_->modFd(EPOLL_CTL_DEL,socket_fd,event);
 
-        auto it = webserver.httpDataMap_.find(socket_fd);
-        if(it == webserver.httpDataMap_.end()){
+        auto it = webserver->httpDataMap_.find(socket_fd);
+        if(it == webserver->httpDataMap_.end()){
             std::cout << "error : httpData already erase !!! "
                       << " in file " << __FILE__ << " at line " << __LINE__ << std::endl;
         }
-        webserver.httpDataMap_.erase(it);
+        webserver->httpDataMap_.erase(it);
         /*fd会在clientSocket析构函数中关闭*/
     }
 
@@ -24,24 +25,37 @@ void cbfunc(WebServer & webserver,std::shared_ptr<HttpData> httpData){
 
 
 WebServer::WebServer(int threadNum,int maxTask, int eventSize,int port, char * ip)
-: serverSocket_(port,ip),threadNum_(threadNum),maxTask_(maxTask),eventSize_(eventSize),
-threadPool_(threadNum,eventSize),epoll_(eventSize){
+: serverSocket_(port,ip),threadNum_(threadNum),maxTask_(maxTask),eventSize_(eventSize),epoll_(new Epoll(eventSize)),timerManager(new TimerManager){
 
+    threadPool_ = std::make_shared<ThreadPool>(threadNum_,maxTask_);
     /*给serverSocket设置监听*/
-    serverSocket_.epoll_fd_ = epoll_.get_epoll_fd();
+    serverSocket_.epoll_fd_ = epoll_->get_epoll_fd();
     struct epoll_event event;
     event.events = EPOLLIN | EPOLLET;
     event.data.fd = serverSocket_.socket_fd_;
-    epoll_.modFd(EPOLL_CTL_ADD,serverSocket_.socket_fd_,&event);
+    epoll_->modFd(EPOLL_CTL_ADD,serverSocket_.socket_fd_,&event);
 }
 
 WebServer::~WebServer() {
+    if(timerManager){
+        delete timerManager;
+    }else{
+        std::cout << " * epoll error in " << __FILE__ << " at line " << __LINE__ << std :: endl;
+    }
+
+    if(epoll_)
+    {
+        delete epoll_;
+    }else{
+        std::cout << " * epoll error in " << __FILE__ << " at line " << __LINE__ << std :: endl;
+
+    }
     /*删除serverSocket设置监听*/
-    serverSocket_.epoll_fd_ = epoll_.get_epoll_fd();
+    serverSocket_.epoll_fd_ = epoll_->get_epoll_fd();
     struct epoll_event event;
     event.events = EPOLLIN | EPOLLET;
     event.data.fd = serverSocket_.socket_fd_;
-    epoll_.modFd(EPOLL_CTL_DEL,serverSocket_.socket_fd_,&event);
+    epoll_->modFd(EPOLL_CTL_DEL,serverSocket_.socket_fd_,&event);
 }
 
 void ::WebServer::handleConnection(){
@@ -49,21 +63,21 @@ void ::WebServer::handleConnection(){
     ClientSocket clientSocket;
     serverSocket_.accept(clientSocket);
     std::shared_ptr<HttpData> httpData = std::make_shared<HttpData>(clientSocket);
-    httpData->epoll_fd_ = epoll_.get_epoll_fd();/*注意传递epoll_fd*/
+    httpData->epoll_fd_ = epoll_->get_epoll_fd();/*注意传递epoll_fd*/
     size_t interval;
     std::shared_ptr<TimerNode> timerNode = std::make_shared<TimerNode>(interval,httpData,this,cbfunc) ;
-    timerManager.addTimerNode(timerNode);
+    timerManager->addTimerNode(timerNode);
 }
 
 
 std::vector<std::shared_ptr<HttpData>> WebServer::handleEvents() {
-    int ret = epoll_.wait(0);
+    int ret = epoll_->wait(0);
     std::vector<std::shared_ptr<HttpData>> epollInSocket;
     if(ret == -1){
         std::cout << "epoll_wait error: " << errno << " in file " << __FILE__
                   << "at line " << __LINE__ << std:: endl;
     }
-    struct epoll_event * events = epoll_.getEpollEvent();
+    struct epoll_event * events = epoll_->getEpollEvent();
     for(int i = 0; i < ret; ++i){
         int fd = events[i].data.fd;
         /*1 有新的连接到来*/
@@ -101,6 +115,7 @@ std::vector<std::shared_ptr<HttpData>> WebServer::handleEvents() {
             }
         }
     }
+    return epollInSocket;
 }
 
 void WebServer::do_request(std::shared_ptr<void> arg) {
@@ -165,9 +180,9 @@ void WebServer::do_request(std::shared_ptr<void> arg) {
                 event.events = Epoll::DEFAULT_EVENT;
                 int fd = event.data.fd = sharedHttpData->sharedPtr_clientSocket->fd_;
 
-                epoll_.modFd(EPOLL_CTL_ADD, fd,&event);
+                epoll_->modFd(EPOLL_CTL_ADD, fd,&event);
                 std::shared_ptr<TimerNode> timerNode = std::make_shared<TimerNode>(TimerNode::DEFAULT_INTERVAL_SEC,sharedHttpData,this,cbfunc) ;
-                timerManager.addTimerNode(timerNode);
+                timerManager->addTimerNode(timerNode);
             }
 
         } else {
@@ -179,8 +194,6 @@ void WebServer::do_request(std::shared_ptr<void> arg) {
 
 void WebServer::run() {
 
-
-
     std::vector<std::shared_ptr<HttpData>> epollInSocket;
 
     while(true){
@@ -189,10 +202,10 @@ void WebServer::run() {
             Task task;
             task.function = std::bind(&WebServer::do_request, this, std::placeholders::_1);
             task.arg = it;
-            threadPool_.appendTask(task);
+            threadPool_->appendTask(task);
         }
         /*每次处理完事件后就检查定时器*/
-        timerManager.tick();
+        timerManager->tick();
 
     }
 }

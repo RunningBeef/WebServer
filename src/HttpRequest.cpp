@@ -8,7 +8,7 @@ std::ostream & operator << (std::ostream & count,const HttpRequest & httpRequest
 
     std::cout << "method: " <<  httpRequest.method_ << "  " << "url: " << httpRequest.url_
     << "  " << "version: " << httpRequest.version_ << std:: endl;
-    for(auto it : httpRequest.headerMap_){
+    for(auto it : httpRequest.headerToStringMap_){
         std::cout << it.first << " :   " << it.second << std::endl;
     }
     std::cout << httpRequest.content_ << std::endl;

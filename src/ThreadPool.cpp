@@ -4,13 +4,14 @@
 
 #include "../include/ThreadPool.h"
 
-template<typename T>
-int ThreadPool<T>::MAX_TASK_SIZE = 1024;
-template<typename T>
-int ThreadPool<T>::MAX_THREAD_NUM = 10;
 
-template<typename T>
-ThreadPool<T>::ThreadPool(int threadNum, int maxTaskNum):thread_num_(threadNum), max_task_num_(maxTaskNum), shutdown_(
+
+int ThreadPool::MAX_TASK_SIZE = 1024;
+
+int ThreadPool::MAX_THREAD_NUM = 10;
+
+
+ThreadPool::ThreadPool(int threadNum, int maxTaskNum):thread_num_(threadNum), max_task_num_(maxTaskNum), shutdown_(
         false), condition_(mutex_) {/*注意用mutex_给condition_初始化*/
     if (thread_num_ < 1 || thread_num_ > MAX_THREAD_NUM) {
         std::cout << "set threadNum error " << std::endl;
@@ -34,14 +35,14 @@ ThreadPool<T>::ThreadPool(int threadNum, int maxTaskNum):thread_num_(threadNum),
     }
 }
 
-template<typename T>
-ThreadPool<T>::~ThreadPool() {
+
+ThreadPool::~ThreadPool() {
     shutdown_ = true;
 }
 
-template<typename T>
-void *ThreadPool<T>::work(void *arg) {
-    ThreadPool<T> *threadPoll = (ThreadPool<T> *) arg;
+
+void * ThreadPool::work(void *arg) {
+    ThreadPool *threadPoll = (ThreadPool *) arg;
     threadPoll->run();
     return NULL;
 }
@@ -93,9 +94,9 @@ void *ThreadPool<T>::work(void *arg) {
   一旦 pthread_cond_wait() 锁定了互斥对象，那么它将返回并允许 1 号线程继续执行。
   那时，它可以马上检查列表（相当于下面的run函数，检查任务队列是否为空），查看它所感兴趣的更改。
  * */
-template<typename T>
-void ThreadPool<T>::run() {
-    T task;
+
+void ThreadPool::run() {
+    Task task;
     while (true) {
 
         {
@@ -109,12 +110,12 @@ void ThreadPool<T>::run() {
             task = task_queue_.front();
             task_queue_.pop();
         }
-        task.function(task.data);/*先解锁后执行任务，执行任务过程中占用锁是没有意义的*/
+        task.function(task.arg);/*先解锁后执行任务，执行任务过程中占用锁是没有意义的*/
     }
 }
 
-template<typename T>
-void ThreadPool<T>::appendTask(T task) {
+
+void ThreadPool::appendTask(Task task) {
     MutexGuard mutexGuard(mutex_);
     {
         if (task_queue_.size() == max_task_num_) {

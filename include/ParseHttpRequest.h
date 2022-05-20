@@ -2,8 +2,9 @@
 // Created by yonggeng on 3/24/22.
 //
 
-#ifndef RUNNINGBEEF_WEBSERVER_PARSEHTTPREQUEST_H
-#define RUNNINGBEEF_WEBSERVER_PARSEHTTPREQUEST_H
+//#ifndef RUNNINGBEEF_WEBSERVER_PARSEHTTPREQUEST_H
+//#define RUNNINGBEEF_WEBSERVER_PARSEHTTPREQUEST_H
+#pragma once
 
 #define CR '\r'
 #define LF '\n'
@@ -45,4 +46,4 @@ public:
     /*check_index 起始位置， read_index数据结尾位置的下一位，next_line_index记录下一行起始位置*/
     static HTTP_CODE pare_httpRequest(char * buffer,int & checked_index, int & read_index,int & next_line_index,PARSE_STATUS &parseStatus,HttpRequest & httpRequest);
 };
-#endif //RUNNINGBEEF_WEBSERVER_PARSEHTTPREQUEST_H
+//#endif //RUNNINGBEEF_WEBSERVER_PARSEHTTPREQUEST_H

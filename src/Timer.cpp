@@ -3,9 +3,9 @@
 //
 #include "../include/Timer.h"
 
-
+size_t TimerNode::current_src = 0;
 size_t TimerNode:: DEFAULT_INTERVAL_SEC = 20;
-TimerNode::TimerNode(size_t interval,std::shared_ptr<HttpData> httpData,WebServer * webServer,void (* cbFunc_ )(WebServer & , std::shared_ptr<HttpData>))
+TimerNode::TimerNode(size_t interval,std::shared_ptr<HttpData> httpData,WebServer * webServer,void (* cbFunc_ )(WebServer * , std::shared_ptr<HttpData>))
 :deleted_(false),webserver_(webServer){
     TimerNode::setExpiredTime(TimerNode::DEFAULT_INTERVAL_SEC);
 
@@ -15,7 +15,7 @@ TimerNode::TimerNode(size_t interval,std::shared_ptr<HttpData> httpData,WebServe
 TimerNode::~TimerNode(){
 
     if(httpData_){
-        //cbFunc_(webserver_,httpData_);
+        cbFunc_(webserver_,httpData_);
     }
 }
 
@@ -32,7 +32,7 @@ bool TimerNode:: isDeleted(){
 /*设置过期时间*/
 void TimerNode::setExpiredTime(size_t interval = DEFAULT_INTERVAL_SEC){
     updateCurrentTime();
-    TimerNode::expiredTime_ = TimerNode::current_src + interval;
+    TimerNode::expiredTime_ = current_src + interval;
 }
 
 size_t TimerNode::getExpiredTime() {

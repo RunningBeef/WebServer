@@ -52,7 +52,7 @@ public:
     int threadNum_;/*线程个数*/
     int maxTask_;/*任务队列最大存储任务个数*/
     int eventSize_;/*监听事件数量*/
-    ServerSocket serverSocket_;/*服haodi务socket*/
+    ServerSocket serverSocket_;/*服务socket*/
     std::shared_ptr<ThreadPool> threadPool_;/*线程池*/
     Epoll *epoll_;/*epoll类方法封装*/
     TimerManager  * timerManager;/*定时器管理容器*/

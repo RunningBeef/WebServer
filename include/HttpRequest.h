@@ -1,9 +1,12 @@
 //
 // Created by yonggeng on 3/23/22.
 //
+//
+//#ifndef RUNNINGBEEF_WEBSERVER_HTTPREQUEST_H
+//#define RUNNINGBEEF_WEBSERVER_HTTPREQUEST_H
+#pragma once
 
-#ifndef RUNNINGBEEF_WEBSERVER_HTTPREQUEST_H
-#define RUNNINGBEEF_WEBSERVER_HTTPREQUEST_H
+
 #include<iostream>
 #include<unordered_map>
 
@@ -65,4 +68,4 @@ public:/*有空改成private*/
 public:
     std::unordered_map<HTTP_HEADER,std::string,EnumClassHash> headerToStringMap_;/*保存各个首部字段*/
 };
-#endif //RUNNINGBEEF_WEBSERVER_HTTPREQUEST_H
+//#endif //RUNNINGBEEF_WEBSERVER_HTTPREQUEST_H
