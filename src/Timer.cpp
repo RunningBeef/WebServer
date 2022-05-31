@@ -4,9 +4,9 @@
 #include "../include/Timer.h"
 
 size_t TimerNode::current_src = 0;
-size_t TimerNode:: DEFAULT_INTERVAL_SEC = 20;
+size_t TimerNode:: DEFAULT_INTERVAL_SEC = 100000;
 TimerNode::TimerNode(size_t interval,std::shared_ptr<HttpData> httpData,WebServer * webServer,void (* cbFunc_ )(WebServer * , std::shared_ptr<HttpData>))
-:deleted_(false),webserver_(webServer){
+:httpData_(httpData),deleted_(false),webserver_(webServer){
     TimerNode::setExpiredTime(TimerNode::DEFAULT_INTERVAL_SEC);
 
 }

@@ -29,10 +29,17 @@ std::unordered_map<std::string, MimeType> Mime_map = {
 
 void HttpResponse::appendBuffer(char *buffer) const{
 
-    // 版本
-    sprintf(buffer, "%s %d %s\r\n", mVersion,mStatusCode, mStatusMsg.c_str());
+    // 版本 状态码 原因短语
+    if (mVersion == HttpRequest::HTTP1_1)
+    {
+        sprintf(buffer, "HTTP/1.1 %d %s\r\n", mStatusCode, mStatusMsg.c_str());
+    }
+    else
+    {
+        sprintf(buffer, "HTTP/1.0 %d %s\r\n", mStatusCode, mStatusMsg.c_str());
+    }
 
-    // 头部字段
+    // 首部字段
     for (auto it = mHeaders.begin(); it != mHeaders.end(); it++) {
         sprintf(buffer, "%s%s: %s\r\n", buffer, it->first.c_str(), it->second.c_str());
     }

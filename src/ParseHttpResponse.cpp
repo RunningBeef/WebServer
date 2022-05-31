@@ -35,7 +35,7 @@ char INDEX_PAGE[] = "<!DOCTYPE html>\n"
                     "</head>\n"
                     "<body>\n"
                     "<h1>Welcome to RunningBeef WebServer!</h1>\n"
-                    "<p>If you see this page, the lc webserver is successfully installed and\n"
+                    "<p>If you see this page, the RunningBeef webserver is successfully installed and\n"
                     "    working. </p>\n"
                     "\n"
                     "<p>For online documentation and support please refer to\n"
@@ -120,10 +120,12 @@ void ParseHttpResponse:: getMime(std::shared_ptr<HttpData> httpData){
 }
 
 void ParseHttpResponse::send(std::shared_ptr<HttpData> httpData,FILE_STATUS fileStatus){
+    std::cout<<"test send"<<std::endl;
     char header[BUFFERSIZE];
     bzero(header, '\0');
     const char *internal_error = "Internal Error";
     struct stat file_stat;
+
     httpData->sharedPtr_httpResponse->appendBuffer(header);
     // 404
     if (fileStatus == FILE_NOT_FOUND) {
@@ -140,7 +142,7 @@ void ParseHttpResponse::send(std::shared_ptr<HttpData> httpData,FILE_STATUS file
         ::send(httpData->sharedPtr_clientSocket->fd_, header, strlen(header), 0);
         return;
     }
-
+    std::cout<<"test3"<<std::endl;
     if (fileStatus == FILE_FORBIDDEN) {
         sprintf(header, "%sContent-length: %d\r\n\r\n", header, strlen(FORBIDDEN_PAGE));
         sprintf(header, "%s%s", header, FORBIDDEN_PAGE);
@@ -154,7 +156,7 @@ void ParseHttpResponse::send(std::shared_ptr<HttpData> httpData,FILE_STATUS file
         ::send(httpData->sharedPtr_clientSocket->fd_, header, strlen(header), 0);
         return;
     }
-
+    std::cout<<"test4" << std::endl;
     int filefd = ::open(httpData->sharedPtr_httpResponse->filePath().c_str(), O_RDONLY);
     // 内部错误
     if (filefd < 0) {
@@ -178,4 +180,5 @@ void ParseHttpResponse::send(std::shared_ptr<HttpData> httpData,FILE_STATUS file
     sprintf(header, "%s%s", header, internal_error);
     ::send(httpData->sharedPtr_clientSocket->fd_, header, strlen(header), 0);
     return;
+
 }

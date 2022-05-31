@@ -3,42 +3,58 @@
 //
 #include "../include/HttpData.h"
 
-HttpData::HttpData(ClientSocket & clientSocket){
+HttpData::HttpData()
+{
     sharedPtr_httpRequest = std::make_shared<HttpRequest>();
     sharedPtr_httpResponse = std::make_shared<HttpResponse>();
-    sharedPtr_clientSocket = std::make_shared<ClientSocket>(clientSocket);
-    epoll_fd_ = sharedPtr_clientSocket->epoll_fd_;
-
+    sharedPtr_clientSocket = std::make_shared<ClientSocket>();
 }
 
-HttpData::~HttpData() {
+void HttpData::setClientSocket(std::shared_ptr<ClientSocket> clientSocket_ptr)
+{
+    sharedPtr_clientSocket->fd_ = clientSocket_ptr->fd_;
+    sharedPtr_clientSocket->epoll_fd_ = clientSocket_ptr->epoll_fd_;
 
+    sharedPtr_clientSocket->clientAddr_ = clientSocket_ptr->clientAddr_;
+    sharedPtr_clientSocket->clientAddrlength_ = clientSocket_ptr->clientAddrlength_;
 }
+
+HttpData::~HttpData()
+{
+}
+
 /*socket异常或者超时，调用TimerNode的回调函数，立刻关闭map中fd*/
-/*socket更新时，不方便从堆中直接找出这个定时器删除，
- * 而是先断开HttpData和旧的TimerNode的联系
- * 再给这个SOCKET建立新的TimerNode*/
-
 void HttpData::closeTimerNode()
 {
-
     std::shared_ptr<TimerNode> temp = weakPtr_TimerNode.lock();
-    if(temp){/*如果TimerNode对象还存在*/
+    if (temp)
+    { /*如果TimerNode对象还存在*/
         temp->setDeleted();
-        temp->cbFunc_(temp->webserver_,temp->httpData_);/*调用回调函数关闭socket*/
+        temp->cbFunc_(temp->webserver_, temp->httpData_); /*调用回调函数关闭socket*/
         temp.reset();
+    }
+    else
+    {
+        std::cout << "timerNode already closed" << __FILE__ << " at line " << __LINE__ << std::endl;
     }
 }
 
-/*断开HttpData和旧的TimerNode的联系*/
-void HttpData::breakRelated(){
+/*socket有新的请求，需要刷新第定时器时使用，断开HttpData和旧的TimerNode的联系*/
+void HttpData::breakRelated()
+{
     std::shared_ptr<TimerNode> temp = weakPtr_TimerNode.lock();
-    if(temp){/*如果TimerNode对象还存在*/
+    if (temp)
+    { /*如果TimerNode对象还存在*/
         temp.reset();
+    }
+    else
+    {
+        std::cout << "timerNode already closed" << __FILE__ << " at line " << __LINE__ << std::endl;
     }
 }
 
 /*设置的TimerNode*/
-void HttpData::setTimerNode(std::shared_ptr<TimerNode> & timerNode){
+void HttpData::setTimerNode(std::shared_ptr<TimerNode> &timerNode)
+{
     weakPtr_TimerNode = timerNode;
 }

@@ -13,18 +13,20 @@ int ThreadPool::MAX_THREAD_NUM = 10;
 
 ThreadPool::ThreadPool(int threadNum, int maxTaskNum):thread_num_(threadNum), max_task_num_(maxTaskNum), shutdown_(
         false), condition_(mutex_) {/*注意用mutex_给condition_初始化*/
+    
     if (thread_num_ < 1 || thread_num_ > MAX_THREAD_NUM) {
-        std::cout << "set threadNum error " << std::endl;
+        std::cout << "set threadNum unfit " << std::endl;
         throw std::exception();
     }
-    if (max_task_num_ < 1 || max_task_num_ > MAX_THREAD_NUM) {
-        std::cout << "set maxTaskNum error " << std::endl;
+    if (max_task_num_ < 1 || max_task_num_ > MAX_TASK_SIZE) {
+        std::cout << "set maxTaskNum unfit " << std::endl;
         throw std::exception();
     }
+
     workThread_ = std::vector<pthread_t>(thread_num_, -1);
     for (auto &it: workThread_) {
         if (pthread_create(&it, nullptr, work, this)) {
-            std::cout << "error int file " << __FILE__ << " at line " << __LINE__ << std::endl;
+            std::cout << "create thread unsuccess in file " << __FILE__ << " at line " << __LINE__ << std::endl;
             throw std::exception();
         }
         if (pthread_detach(it))/*https://blog.csdn.net/qq_33883085/article/details/89425933*/
@@ -43,6 +45,7 @@ ThreadPool::~ThreadPool() {
 
 void * ThreadPool::work(void *arg) {
     ThreadPool *threadPoll = (ThreadPool *) arg;
+    /* 每个线程都一直在运行这个函数，不断的处理http请求和响应 */
     threadPoll->run();
     return NULL;
 }
@@ -122,6 +125,6 @@ void ThreadPool::appendTask(Task task) {
             std::cout << "to more task undo ! error in threadPool" << std::endl;
         }
         task_queue_.push(task);
-        condition_.notify();/*记得通知*/
+        condition_.notify();/*记得唤醒工作线程*/
     }
 }

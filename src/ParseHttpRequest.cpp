@@ -89,7 +89,7 @@ ParseHttpRequest::HTTP_CODE ParseHttpRequest::parse_requestLine(char * temp,PARS
     if(strncasecmp(version,"HTTP/1.0",8) == 0){
         httpRequest.version_ = HttpRequest::HTTP1_0;
         std::cout << "The request version is HTTP/1.O" << std::endl;
-    }else if(strncasecmp(version,"HTTP/1.0",8) == 0){
+    }else if(strncasecmp(version,"HTTP/1.1",8) == 0){
         httpRequest.version_ = HttpRequest::HTTP1_1;
         std::cout << "The request version is HTTP/1.1" << std::endl;
     }else{
@@ -186,6 +186,7 @@ ParseHttpRequest::HTTP_CODE ParseHttpRequest::pare_httpRequest(char * buffer,int
                     if(retCode == GET_REQUEST){/*处理结束直接返回*/
                         return GET_REQUEST;
                     }
+
                     return BAD_REQUEST;
                 }
                 default:
