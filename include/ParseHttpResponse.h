@@ -16,8 +16,9 @@ extern char INDEX_PAGE[];
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/mman.h>
+#include <iostream>
 
-#define  BUFFERSIZE 2048
+#define  BUFFERSIZE 6096
 
 
 

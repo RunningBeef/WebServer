@@ -33,7 +33,7 @@ void cbfunc(WebServer * webserver,std::shared_ptr<HttpData> httpData);
 class WebServer{
 public:
     friend void cbfunc(WebServer & webserver,std::shared_ptr<HttpData> httpData);
-    explicit WebServer(int threadNum = 8,int maxTask = 1024,int eventSize = 1024 ,int port = 8080,char * ip = NULL);
+    explicit WebServer(char *, int, int, int);
     ~WebServer();
 
     /*主函数*/
@@ -51,7 +51,7 @@ public:
 public:
     int threadNum_;/*线程个数*/
     int maxTask_;/*任务队列最大存储任务个数*/
-    int eventSize_;/*监听事件数量*/
+    const int eventSize_ = 55555;/*监听事件数量*/
     ServerSocket serverSocket_;/*服务socket*/
     std::shared_ptr<ThreadPool> threadPool_;/*线程池*/
     Epoll *epoll_;/*epoll类方法封装*/

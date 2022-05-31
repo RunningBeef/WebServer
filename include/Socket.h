@@ -19,8 +19,10 @@
 
 class ClientSocket;
 
+/* 将socket设置为非阻塞 */
 int setNonBlocking(int fd) ;
 
+/* 服务端socket */
 class ServerSocket
 {
 public:
@@ -28,21 +30,23 @@ public:
     ~ServerSocket();
     void bind();
     void listen();
-    void accept(ClientSocket &clientSocket);
+    int accept(ClientSocket &clientSocket);
     void setSocketReused();
 public:
     int port_;
     char * ip_;
-    int socket_fd_;
-    int epoll_fd_;
-    struct sockaddr_in sockAddr_;
+    int server_socket_fd_;/* 服务端socket fd*/
+    struct sockaddr_in sockAddr_;/* 服务端socket 协议簇、ip地址、端口号*/
 };
 
+/* 客户端socket */
 class ClientSocket
 {
 public:
     ClientSocket();
     ~ClientSocket();
+    ClientSocket(const ClientSocket &clientSocket);
+    ClientSocket & operator = (ClientSocket clientSocket);
 public:
     int fd_;/*接受的socket连接*/
     int epoll_fd_;/*指向监听内核事件的内核事件表*/

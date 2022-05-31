@@ -12,9 +12,12 @@
 
 
 class HttpRequest;
-std::ostream & operator << (std::ostream & ,const HttpRequest &);/*输出整理好的Http请求报文的各个字段*/
+
+/*重载<<运算符 输出整理好的Http请求报文的各个字段*/
+std::ostream & operator << (std::ostream & ,const HttpRequest &);
 
 class HttpRequest{
+    /* 友元 */
     friend std::ostream & operator << (std::ostream &,const HttpRequest & );
 
 public:
@@ -35,8 +38,9 @@ public:
         Upgrade_Insecure_Requests
     };
 
-
+    /* 首部字段对应的枚举变量*/
     static std::unordered_map<std::string, HTTP_HEADER> static_stringToHeader_map_;
+    /* 哈希函数，其实也可以不用额外写*/
     struct EnumClassHash {
         template<typename T>
         std::size_t operator()(T t) const {
@@ -66,6 +70,7 @@ public:/*有空改成private*/
     HTTP_VERSION version_;
     std::string content_;/*报文主体*/
 public:
-    std::unordered_map<HTTP_HEADER,std::string,EnumClassHash> headerToStringMap_;/*保存各个首部字段*/
+    /*存储首部字段对应的值 */
+    std::unordered_map<HTTP_HEADER,std::string,EnumClassHash> headerToStringMap_;
 };
 //#endif //RUNNINGBEEF_WEBSERVER_HTTPREQUEST_H

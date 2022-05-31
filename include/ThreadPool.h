@@ -17,13 +17,13 @@
 #include <memory>
 
 struct Task{/*封装工作任务*/
-    std::function<void(std::shared_ptr<void>)> function;
-    std::shared_ptr<void> arg;
+    std::function<void(std::shared_ptr<void>)> function;/* do_request() */
+    std::shared_ptr<void> arg;/*httpdata*/
 };
 
 class ThreadPool{
 public:
-    ThreadPool(int threadNum = 10,int maxTaskNum = 1024);
+    ThreadPool(int threadNum = 5,int maxTaskNum = 1024);
     ~ThreadPool();
     void appendTask(Task);
 public:
@@ -42,7 +42,7 @@ private:
     int max_task_num_;/*最大任务个数*/
     int thread_num_;/*线程数量*/
     bool shutdown_;/*是否停止线程池，子线程所运行的run函数通过判断这个变量决定是否退出*/
-    Mutex mutex_;
-    Condition condition_;
+    Mutex mutex_;  /*给任务队列上锁*/
+    Condition condition_;/* 条件变量同步任务数 */
 };
 //#endif //RUNNINGBEEF_WEBSERVER_THREADPOOL_H

@@ -8,7 +8,8 @@
 #pragma once
 
 
-#include<string>
+#include <string>
+
 /*移除多余 " \t" */
 std::string& ltrim(std::string &str) {
     if (str.empty()) {
@@ -36,5 +37,6 @@ std::string& trim(std::string& str) {
     rtrim(str);
     return str;
 }
+
 
 //#endif //RUNNINGBEEF_WEBSERVER_UTIL_H
