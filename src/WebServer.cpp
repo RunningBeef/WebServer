@@ -25,8 +25,8 @@ void cbfunc(WebServer *webserver, std::shared_ptr<HttpData> httpData)
     }
 }
 
-WebServer::WebServer(char *ip, int port, int threadNum, int maxTask)
-    : serverSocket_(port, ip), threadNum_(threadNum), maxTask_(maxTask), epoll_(new Epoll(eventSize_)), timerManager(new TimerManager)
+WebServer::WebServer(char *ip, int port, int threadNum, int maxTask, int blockTime)
+    : serverSocket_(port, ip), threadNum_(threadNum), maxTask_(maxTask), blockTime_(blockTime), epoll_(new Epoll(eventSize_)), timerManager(new TimerManager)
 {
 
     threadPool_ = std::make_shared<ThreadPool>(threadNum_, maxTask_);
@@ -102,7 +102,7 @@ void WebServer::handleConnection()
 std::vector<std::shared_ptr<HttpData>> WebServer::handleEvents()
 {
     /* 是否考虑到底该阻塞多久？ */
-    int ret = epoll_->wait(-1);
+    int ret = epoll_->wait(blockTime_);
     std::vector<std::shared_ptr<HttpData>> epollInSocket;
     if (ret == -1)
     {

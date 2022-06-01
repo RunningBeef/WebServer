@@ -33,7 +33,7 @@ void cbfunc(WebServer * webserver,std::shared_ptr<HttpData> httpData);
 class WebServer{
 public:
     friend void cbfunc(WebServer & webserver,std::shared_ptr<HttpData> httpData);
-    explicit WebServer(char *, int, int, int);
+    explicit WebServer(char *, int, int, int, int);
     ~WebServer();
 
     /*主函数*/
@@ -49,6 +49,7 @@ public:
     std::vector<std::shared_ptr<HttpData>> handleEvents();
 
 public:
+    int blockTime_;
     int threadNum_;/*线程个数*/
     int maxTask_;/*任务队列最大存储任务个数*/
     const int eventSize_ = 55555;/*监听事件数量*/
