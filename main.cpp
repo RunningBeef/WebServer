@@ -36,15 +36,15 @@ int main(int argc, char **argv)
 {
     daemonize();
 
-    if (argc < 5)
+    if (argc < 6)
     {
-        std::cout << "usage:" << argv[0] << " ip_address port_number thread_number maxTask_number" << std::endl;
+        std::cout << "usage:" << argv[0] << " ip_address port_number thread_number maxTask_number waitTime" << std::endl;
         return 1;
     }
 
     char *ip = argv[1];
-    int port = atoi(argv[2]), threadNum = atoi(argv[3]), maxTask = atoi(argv[4]);
-    WebServer webServer(ip, port, threadNum, maxTask);
+    int port = atoi(argv[2]), threadNum = atoi(argv[3]), maxTask = atoi(argv[4]),blockTime = atoi(argv[5]);
+    WebServer webServer(ip, port, threadNum, maxTask,blockTime);
     webServer.run();
     std::cout << "WebServer over!" << std::endl;
     return 0;
