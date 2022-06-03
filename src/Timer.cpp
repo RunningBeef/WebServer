@@ -5,18 +5,15 @@
 
 size_t TimerNode::current_src = 0;
 size_t TimerNode:: DEFAULT_INTERVAL_SEC = 100000;
-TimerNode::TimerNode(size_t interval,std::shared_ptr<HttpData> httpData,WebServer * webServer,void (* cbFunc_ )(WebServer * , std::shared_ptr<HttpData>))
-:httpData_(httpData),deleted_(false),webserver_(webServer){
+TimerNode::TimerNode(size_t interval,CbTask task)
+:processed_(false),cbTask_(task){
     TimerNode::setExpiredTime(TimerNode::DEFAULT_INTERVAL_SEC);
-
 }
 
 /*调用回调函数关闭socket...等资源*/
 TimerNode::~TimerNode(){
-
-    if(httpData_){
-        cbFunc_(webserver_,httpData_);
-    }
+    if(!isProcessed())/* 如果已经处理过就不处理了 */
+        cbTask_.function(cbTask_.arg);
 }
 
 /*是否超时*/
@@ -25,8 +22,8 @@ bool TimerNode::isExpired(){
 }
 
 /*是否因为异常或着连接更新，被标记为删除*/
-bool TimerNode:: isDeleted(){
-    return deleted_;
+bool TimerNode:: isProcessed(){
+    return processed_;
 }
 
 /*设置过期时间*/
@@ -35,12 +32,12 @@ void TimerNode::setExpiredTime(size_t interval = DEFAULT_INTERVAL_SEC){
     TimerNode::expiredTime_ = current_src + interval;
 }
 
-size_t TimerNode::getExpiredTime() {
-    return expiredTime_;
+void TimerNode::setProcessed(){
+    processed_ = true;
 }
 
-void TimerNode::setDeleted(){
-    deleted_ = true;
+size_t TimerNode::getExpiredTime() {
+    return expiredTime_;
 }
 
 /*更新系统当前时间*/
@@ -56,7 +53,7 @@ void TimerManager::addTimerNode(std::shared_ptr<TimerNode> timerNode) {
     {
         MutexGuard mutexGuard(mutex_);/*上锁*/
         timerQueue.push(timerNode);
-        timerNode->httpData_->setTimerNode(timerNode);
+        // timerNode->httpData_->setTimerNode(timerNode);
     }
 }
 
@@ -70,8 +67,9 @@ void TimerManager::tick() {
             break;
         }
         std::shared_ptr<TimerNode> temp = timerQueue.top();
-        if(temp->isExpired() || temp->isDeleted())
+        if(temp->isExpired() || temp->isProcessed())
         {
+            
             timerQueue.pop();
         }else break;
     }

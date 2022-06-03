@@ -29,8 +29,9 @@ void HttpData::closeTimerNode()
     std::shared_ptr<TimerNode> temp = weakPtr_TimerNode.lock();
     if (temp)
     { /*如果TimerNode对象还存在*/
-        temp->setDeleted();
-        temp->cbFunc_(temp->webserver_, temp->httpData_); /*调用回调函数关闭socket*/
+        std::cout << "use close TimerNode success in file " << __FILE__ << " at line " << __LINE__ << std::endl;
+        temp->setProcessed();
+        temp->cbTask_.function(temp->cbTask_.arg); /*调用回调函数关闭socket*/
         temp.reset();
     }
     else

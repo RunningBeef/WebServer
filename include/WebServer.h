@@ -24,15 +24,11 @@ class TimerManager;
 
 extern std::string basePath;
 
-
-
 class WebServer;
 
-void cbfunc(WebServer * webserver,std::shared_ptr<HttpData> httpData);
 
 class WebServer{
 public:
-    friend void cbfunc(WebServer & webserver,std::shared_ptr<HttpData> httpData);
     explicit WebServer(char *, int, int, int, int);
     ~WebServer();
 
@@ -41,6 +37,8 @@ public:
 
     /*完成http请求和响应*/
     void do_request(std::shared_ptr<void >);
+    /* 回调函数 */
+    void cbfunc(std::shared_ptr<void>);
 
     /*服务器获取新的连接*/
     void handleConnection();

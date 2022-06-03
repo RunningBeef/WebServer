@@ -14,7 +14,6 @@ int setNonBlocking(int fd)
 /*函数声明时有默认参数，实现的时候就不能加默认参数*/
 ServerSocket::ServerSocket(int port, char *ip) : port_(port), ip_(ip)
 {
-
     bzero(&sockAddr_, sizeof(sockAddr_));
     sockAddr_.sin_family = AF_INET;
 
@@ -98,6 +97,7 @@ ClientSocket::ClientSocket()
 
 ClientSocket::~ClientSocket()
 {
+    std::cout<<"closer fd " << fd_ << "success in file " << __FILE__ << "at line " << __LINE__ << std::endl;
     close(ClientSocket::fd_);
 }
 
