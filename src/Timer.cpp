@@ -4,7 +4,7 @@
 #include "../include/Timer.h"
 
 size_t TimerNode::current_src = 0;
-size_t TimerNode:: DEFAULT_INTERVAL_SEC = 100000;
+size_t TimerNode:: DEFAULT_INTERVAL_SEC = 3;
 TimerNode::TimerNode(size_t interval,CbTask task)
 :processed_(false),cbTask_(task){
     TimerNode::setExpiredTime(TimerNode::DEFAULT_INTERVAL_SEC);
