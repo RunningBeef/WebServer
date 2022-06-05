@@ -6,7 +6,7 @@
 
 
 
-int ThreadPool::MAX_TASK_SIZE = 1024;
+int ThreadPool::MAX_TASK_SIZE = 10024;
 
 int ThreadPool::MAX_THREAD_NUM = 10;
 
