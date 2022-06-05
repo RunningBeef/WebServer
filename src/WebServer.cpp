@@ -10,10 +10,10 @@ void WebServer::cbfunc(std::shared_ptr<void> arg){
     if (shared_httpData)
     {
         /* 删除监听的事件 */
-        struct epoll_event *event;
-        event->events = Epoll::DEFAULT_EVENT;
-        int socket_fd = event->data.fd = shared_httpData->sharedPtr_clientSocket->fd_;
-        epoll_->modFd(EPOLL_CTL_DEL, socket_fd, event);
+        struct epoll_event event;
+        event.events = Epoll::DEFAULT_EVENT;
+        int socket_fd = event.data.fd = shared_httpData->sharedPtr_clientSocket->fd_;
+        epoll_->modFd(EPOLL_CTL_DEL, socket_fd, &event);
 
         auto it = httpDataMap_.find(socket_fd);
         if (it == httpDataMap_.end())
