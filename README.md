@@ -1,3 +1,62 @@
+## 简介
+这是一个轻量级的Web服务器，目前支持GET、HEAD方法处理静态资源。并发模型选择: 单进程＋Reactor+非阻塞方式运行。
+测试页面：http://124.223.205.139/
+
+## 核心功能及技术
+* 目前支持 HTTP GET、HEAD方法
+* 使用 epoll + 非阻塞IO + 边缘触发(ET) + 线程池 + 定时器 实现高并发处理请求 
+* 使用 EPOLLONESHOT保证一个socket连接在任意时刻都只被一个线程处理 使用定时器支持HTTP长连接，通过定时器处理超时连接，异常连接 
+* 使用function类和bind实现定时器回调函数接口化，从而提高定时器代码复用。
+* 使用 priority queue 实现的最小堆结构管理定时器，使用定期删除，提高性能 
+* 使用根据HTTP请求报文格式，模拟状态机解析HTTP请求报文。
+* 使用RAII手法封装互斥器(pthrea_mutex_t)、 条件变量(pthread_cond_t)等线程同步互斥机制 
+* 使用RAII管理文件描述符等 资源使用shared_ptr、weak_ptr管理指针，防止内存泄漏
+## WebBench进行压测
+**服务器端使用腾讯云**
+* CPU：2核 
+* 内存：2G
+* 硬盘：40G
+* 系统：ubuntu
+
+**客户端WebBench使用本地虚拟机**
+* CPU: 4核
+* 内存：4.5G
+* 硬盘：60G
+* 系统：ubuntu
+#### 测试不同工作线程个数对测试结果的影响
+* 服务器使用6个工作线程，webbench 300clients 60 sec结果如下
+* ![](image/thread=6.png)
+* 服务器使用5个工作线程，webbench 300clients 60 sec结果如下
+* ![](image/thread=5.png)
+* 服务器使用4个工作线程，webbench 300clients 60 sec结果如下
+* ![](image/thread=4.png)
+* 服务器使用3个工作线程，webbench 300clients 60 sec结果如下
+* ![](image/thread=3.png)
+* 服务器使用2个工作线程，webbench 300clients 60 sec结果如下
+* ![](image/thread=2.png)
+* 服务器使用1个工作线程，webbench 300clients 60 sec结果如下
+* ![](image/thread=1.png)
+
+**分析与总结**
+* speed: 每秒钟响应请求数目，
+* susceed: 返回成功个数
+* failed： 返回失败个数
+* 这边可以看到使用3个工作线程http请求速度时最快的，成功的连接也是最多的。因为我使用的服务器是2核2G的，所以每次最多2个工作线程同时工作，第3个线程可以在其中某个线程阻塞时运行，尽可能保证cpu满负荷。但是过多的工作线程会导致线程切换过于频繁，线程切换虽然很快，但是也会耗时，尤其是本项目，用简单的get方法的IO数据量并不大，所以多开更多的线程并不能更快
+**如何分配最佳的线程数目**
+* 最佳线程数目 = （（线程等待时间+线程CPU时间）/线程CPU时间 ）* CPU数目。这里的线程等待时间可以看成线程等待IO时间
+* CPU密集型可以设置为 核心数 + 1
+* 具体有多种业务线程的线程池可以用压力测试看具体多少合适
+
+#### 自己实现的和github原项目测试结果的对比
+* 原项目服务器使用3个工作线程，webbench 300clients 60 sec结果如下
+![](image/origin.png)
+
+* 我的项目服务器使用3个工作线程，webbench 300clients 60 sec结果如下
+![](image/thread=3.png)
+
+**总结与分析**
+* 感觉自己speed和原项目相比少了快1/5，但是原项目failed多了14倍数。目前主要是定时器设计部分和原项目不太一样，内存池功能目前还没用进去。感觉主要是speed的原因,speed上去success也能上去。
+
 ### 定时器设计逻辑Timer.h Timer.cpp
 #### 什么是定时器
 * 心跳机制，客户端定期向服务端发送心跳信息
