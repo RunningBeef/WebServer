@@ -2,9 +2,9 @@
 // Created by yonggeng on 3/26/22.
 //
 
-//#ifndef RUNNINGBEEF_WEBSERVER_PARSEHTTPRESPONSE_H
-//#define RUNNINGBEEF_WEBSERVER_PARSEHTTPRESPONSE_H
-#pragma once
+#ifndef RUNNINGBEEF_WEBSERVER_PARSEHTTPRESPONSE_H
+#define RUNNINGBEEF_WEBSERVER_PARSEHTTPRESPONSE_H
+// #pragma once
 
 extern char NOT_FOUND_PAGE[];
 extern char FORBIDDEN_PAGE[];
@@ -36,4 +36,4 @@ public:
     static void getMime(std::shared_ptr<HttpData>);
     static void send(std::shared_ptr<HttpData>,FILE_STATUS);
 };
-//#endif //RUNNINGBEEF_WEBSERVER_PARSEHTTPRESPONSE_H
+#endif

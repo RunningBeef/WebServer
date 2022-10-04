@@ -2,9 +2,9 @@
 // Created by yonggeng on 3/23/22.
 //
 
-//#ifndef RUNNINGBEEF_WEBSERVER_CONDITION_H
-//#define RUNNINGBEEF_WEBSERVER_CONDITION_H
-#pragma once/* 防止重复头文件被重复引用，用#ifndef和#define出了点问题 */
+#ifndef RUNNINGBEEF_WEBSERVER_CONDITION_H
+#define RUNNINGBEEF_WEBSERVER_CONDITION_H
+// #pragma once/* 防止重复头文件被重复引用，用#ifndef和#define出了点问题 */
 
 #include "../include/Noncopyable.h"
 #include<pthread.h>
@@ -13,7 +13,7 @@
 禁止复制一个条件变量，将该类继承自Noncopyable类（禁用调拷贝构造和 拷贝函数）*/
 class Condition : public  Noncopyable{
 public:
-    
+
     Condition(Mutex &mutex);
     ~Condition();
     /* 唤醒某个阻塞的工作线程，当然有惊群的可能 */
@@ -28,4 +28,4 @@ public:
 
     pthread_cond_t cond_;
 };
-//#endif //RUNNINGBEEF_WEBSERVER_CONDITION_H
+#endif

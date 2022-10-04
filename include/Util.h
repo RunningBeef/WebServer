@@ -2,10 +2,10 @@
 // Created by yonggeng on 3/24/22.
 //
 
-//#ifndef RUNNINGBEEF_WEBSERVER_UTIL_H
-//#define RUNNINGBEEF_WEBSERVER_UTIL_H
+#ifndef RUNNINGBEEF_WEBSERVER_UTIL_H
+#define RUNNINGBEEF_WEBSERVER_UTIL_H
 
-#pragma once
+// #pragma once
 
 
 #include <string>
@@ -39,4 +39,4 @@ std::string& trim(std::string& str) {
 }
 
 
-//#endif //RUNNINGBEEF_WEBSERVER_UTIL_H
+#endif

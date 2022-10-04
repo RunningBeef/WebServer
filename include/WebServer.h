@@ -2,10 +2,10 @@
 // Created by yonggeng on 3/26/22.
 //
 
-//#ifndef RUNNINGBEEF_WEBSERVER_WEBSERVER_H
-//#define RUNNINGBEEF_WEBSERVER_WEBSERVER_H
+#ifndef RUNNINGBEEF_WEBSERVER_WEBSERVER_H
+#define RUNNINGBEEF_WEBSERVER_WEBSERVER_H
 
-#pragma once
+// #pragma once
 
 #include "Timer.h"
 #include "Epoll.h"
@@ -58,6 +58,4 @@ public:
     std::unordered_map<int,std::shared_ptr<HttpData>> httpDataMap_;/*连接socket*/
 };
 
-//#endif //RUNNINGBEEF_WEBSERVER_WEBSERVER_H
-//
-
+#endif

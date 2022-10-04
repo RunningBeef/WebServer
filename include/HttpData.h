@@ -2,9 +2,9 @@
 // Created by yonggeng on 3/24/22.
 //
 //
-//#ifndef RUNNINGBEEF_WEBSERVER_HTTPDATA_H
-//#define RUNNINGBEEF_WEBSERVER_HTTPDATA_H
-#pragma once
+#ifndef RUNNINGBEEF_WEBSERVER_HTTPDATA_H
+#define RUNNINGBEEF_WEBSERVER_HTTPDATA_H
+// #pragma once
 
 #include "Timer.h"
 #include "HttpRequest.h"
@@ -28,16 +28,16 @@ public:
     void breakRelated();
     /*给对应的socket设置定时器*/
     void setTimerNode(std::shared_ptr<TimerNode> &);
-    
+
 
 public:
     std::shared_ptr<HttpRequest> sharedPtr_httpRequest;
     std::shared_ptr<HttpResponse> sharedPtr_httpResponse;
     std::shared_ptr<ClientSocket> sharedPtr_clientSocket;
-   
+
 private:
     /* 使用weak_ptr解决循环引用 */
     std::weak_ptr<TimerNode> weakPtr_TimerNode;
 
 };
-//#endif //RUNNINGBEEF_WEBSERVER_HTTPDATA_H
+#endif

@@ -2,9 +2,9 @@
 // Created by yonggeng on 3/23/22.
 //
 //
-//#ifndef RUNNINGBEEF_WEBSERVER_HTTPREQUEST_H
-//#define RUNNINGBEEF_WEBSERVER_HTTPREQUEST_H
-#pragma once
+#ifndef RUNNINGBEEF_WEBSERVER_HTTPREQUEST_H
+#define RUNNINGBEEF_WEBSERVER_HTTPREQUEST_H
+// #pragma once
 
 
 #include<iostream>
@@ -73,4 +73,4 @@ public:
     /*存储首部字段对应的值 */
     std::unordered_map<HTTP_HEADER,std::string,EnumClassHash> headerToStringMap_;
 };
-//#endif //RUNNINGBEEF_WEBSERVER_HTTPREQUEST_H
+#endif

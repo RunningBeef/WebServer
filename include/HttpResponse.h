@@ -2,9 +2,9 @@
 // Created by yonggeng on 3/25/22.
 //
 
-//#ifndef RUNNINGBEEF_WEBSERVER_HTTPRESPONSE_H
-//#define RUNNINGBEEF_WEBSERVER_HTTPRESPONSE_H
-#pragma once
+#ifndef RUNNINGBEEF_WEBSERVER_HTTPRESPONSE_H
+#define RUNNINGBEEF_WEBSERVER_HTTPRESPONSE_H
+// #pragma once
 
 #include <iostream>
 #include <string>
@@ -127,5 +127,5 @@ private:
     std::string mFilePath;  /* 文件路径 */
     std::unordered_map<std::string, std::string> mHeaders;/* 首部字段 */
 };
-//
-//#endif //RUNNINGBEEF_WEBSERVER_HTTPRESPONSE_H
+
+#endif

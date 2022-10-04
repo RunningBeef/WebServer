@@ -2,9 +2,9 @@
 // Created by yonggeng on 3/25/22.
 //
 
-//#ifndef RUNNINGBEEF_WEBSERVER_TIMER_H
-//#define RUNNINGBEEF_WEBSERVER_TIMER_H
-#pragma once
+#ifndef RUNNINGBEEF_WEBSERVER_TIMER_H
+#define RUNNINGBEEF_WEBSERVER_TIMER_H
+// #pragma once
 
 #include "HttpData.h"
 #include "Mutex.h"
@@ -69,4 +69,4 @@ private:
     Mutex mutex_;
     std::priority_queue<std::shared_ptr<TimerNode>, std::vector<std::shared_ptr<TimerNode>>, TimerCmp> timerQueue;
 };
-//#endif //RUNNINGBEEF_WEBSERVER_TIMER_H
+#endif

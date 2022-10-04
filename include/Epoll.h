@@ -2,9 +2,9 @@
 // Created by yonggeng on 3/25/22.
 //
 
-//#ifndef RUNNINGBEEF_WEBSERVER_EPOLL_H
-//#define RUNNINGBEEF_WEBSERVER_EPOLL_H
-#pragma once
+#ifndef RUNNINGBEEF_WEBSERVER_EPOLL_H
+#define RUNNINGBEEF_WEBSERVER_EPOLL_H
+// #pragma once
 
 #include <sys/epoll.h>
 #include <memory>
@@ -35,4 +35,4 @@ private:
     /*保存监听到的就绪事件*/
     struct epoll_event * events_;
 };
-//#endif //RUNNINGBEEF_WEBSERVER_EPOLL_H
+#endif

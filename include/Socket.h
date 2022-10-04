@@ -2,9 +2,9 @@
 // Created by yonggeng on 3/22/22.
 //
 
-//#ifndef RUNNINGBEEF_WEBSERVER_SOCKET_H
-//#define RUNNINGBEEF_WEBSERVER_SOCKET_H
-#pragma once
+#ifndef RUNNINGBEEF_WEBSERVER_SOCKET_H
+#define RUNNINGBEEF_WEBSERVER_SOCKET_H
+// #pragma once
 
 #include<string.h>
 #include<iostream>
@@ -55,5 +55,5 @@ public:
 
 };
 
-//
-//#endif //RUNNINGBEEF_WEBSERVER_SOCKET_H
+
+#endif

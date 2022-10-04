@@ -34,6 +34,4 @@ set(SOURCE_FILES
         src/Mutex.cpp
         main.cpp
         )
-
-# src/Socket.cpp src/ThreadPool.cpp src/HttpRequest.cpp src/HttpResponse.cpp src/ParseHttpRequest.cpp src/ParseHttpResponse.cpp src/HttpData.cpp src/Timer.cpp src/Epoll.cpp src/WebServer.cpp src/Condition.cpp src/Mutex.cpp main.cpp
 add_executable(RunningBeef_WebServer  ${SOURCE_FILES})#生成可执行文件

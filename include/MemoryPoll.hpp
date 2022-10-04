@@ -1,4 +1,4 @@
-#pragma once
+// #pragma once
 
 /* 功能
 1.扩容 和 压缩
