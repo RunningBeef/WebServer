@@ -16,7 +16,9 @@ int Mutex::tryLock(){
 void Mutex::unlock(){
       pthread_mutex_unlock(&mutex_);
 }
-
+pthread_mutex_t & Mutex::getMutex(){
+      return mutex_;
+}
 MutexGard::MutexGard(Mutex & mutex):mutex_reference_(mutex){
       mutex_reference_.lock();
 }
