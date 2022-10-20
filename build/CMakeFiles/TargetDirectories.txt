@@ -1,3 +1,0 @@
-/home/lighthouse/WebServer/build/CMakeFiles/rebuild_cache.dir
-/home/lighthouse/WebServer/build/CMakeFiles/RunningBeef_WebServer.dir
-/home/lighthouse/WebServer/build/CMakeFiles/edit_cache.dir

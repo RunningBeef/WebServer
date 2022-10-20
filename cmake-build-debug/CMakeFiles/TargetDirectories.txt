@@ -1,3 +1,0 @@
-/home/yonggeng/RunningBeef_WebServer/cmake-build-debug/CMakeFiles/RunningBeef_WebServer.dir
-/home/yonggeng/RunningBeef_WebServer/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/yonggeng/RunningBeef_WebServer/cmake-build-debug/CMakeFiles/rebuild_cache.dir
