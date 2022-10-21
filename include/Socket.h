@@ -6,6 +6,9 @@
 #include <unistd.h>
 #include <string.h>
 #include <assert.h>
+#define SND_BUF_SIZE 5120
+#define RCV_BUF_SIZE 1024
+
 class ClientSocket;
 
 class ServerSocket
@@ -30,7 +33,11 @@ private:
 class ClientSocket
 {
       friend void ServerSocket::accept(ClientSocket &);
-
+public:
+      ClientSocket();
+      ~ClientSocket();
+      void setSendBuffSize();//记得修改发送缓冲区大小
+      void setRecvBuffSize();
 private:
       int client_sockfd_;
       struct sockaddr_in client_address_;
