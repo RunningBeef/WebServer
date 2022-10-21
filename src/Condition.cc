@@ -13,6 +13,6 @@ void Condition::broadCast(){
 void Condition::signal(){
       pthread_cond_signal(&cond_);
 }
-void Condition::wait(){
-      pthread_cond_wait(&cond_, &mutex_reference_.getMutex());
+int Condition::wait(){
+      return pthread_cond_wait(&cond_, &mutex_reference_.getMutex());
 }

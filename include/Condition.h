@@ -11,7 +11,7 @@ public:
       ~Condition();
       void signal();
       void broadCast();
-      void wait();
+      int wait();
 private:
       Mutex & mutex_reference_;
       pthread_cond_t cond_;
