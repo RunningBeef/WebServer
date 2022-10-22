@@ -21,17 +21,19 @@
 本作品由华章数媒授权豆瓣阅读中国大陆范围内电子版制作与发行。
 © 版权所有，侵权必究。
  */
-template<class T>
-class ThreadPool{
+template <class T>
+class ThreadPool
+{
 public:
       ThreadPool(int thread_num = 8, int max_request = 10000);
       //这里直接抛出异常，不会调用析构函数，会造成内存泄漏,后期想办法修改下
       ~ThreadPool();
       bool append(T &);
       static void worker(void *);
-      //pthread_create()第三个参数必须指向一个静态函数，但是线程运行的函数是动态的
-      //http://c.biancheng.net/view/8607.html
+      // pthread_create()第三个参数必须指向一个静态函数，但是线程运行的函数是动态的
+      // http://c.biancheng.net/view/8607.html
       void run();
+
 private:
       int thread_num_;
       int max_request_;
@@ -39,6 +41,6 @@ private:
       Condition request_condition_;
       Mutex queue_locker_;
       queue<T> request_queue_;
-      pthread_t * threads_;
+      pthread_t *threads_;
 };
 #endif

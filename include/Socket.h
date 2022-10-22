@@ -14,13 +14,14 @@ class ClientSocket;
 class ServerSocket
 {
 public:
-      ServerSocket(const char *ip = NULL, int port = 80,int backlog = 1024);
+      ServerSocket(const char *ip = NULL, int port = 80, int backlog = 1024);
       ~ServerSocket();
       void socket();
       void bind();
       void listen();
       void accept(ClientSocket &);
       void reuseAddr();
+
 private:
       int port_;
       const char *ip_;
@@ -33,11 +34,13 @@ private:
 class ClientSocket
 {
       friend void ServerSocket::accept(ClientSocket &);
+
 public:
       ClientSocket();
       ~ClientSocket();
-      void setSendBuffSize();//记得修改发送缓冲区大小
+      void setSendBuffSize(); //记得修改发送缓冲区大小
       void setRecvBuffSize();
+
 private:
       int client_sockfd_;
       struct sockaddr_in client_address_;

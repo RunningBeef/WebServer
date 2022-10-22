@@ -57,9 +57,10 @@ pthread_cond_wait函数执行时，首先把调用线程放入条件变量的等
 © 版权所有，侵权必究。
  */
 template <class T>
-bool ThreadPool<T>::append(T & request){
+bool ThreadPool<T>::append(T &request)
+{
       MutexGard MutexGard(queue_locker_);
-      if(request_queue.size() == max_request_)
+      if (request_queue.size() == max_request_)
             return false;
       request_queue.push(request);
 }
@@ -74,11 +75,11 @@ void ThreadPool<T>::run()
                   MutexGard mutexGard(queue_locker_);
                   while (!request_condition_.wait() && !shutdown_)
                   {
-                        if(!request_queue_.empty())
+                        if (!request_queue_.empty())
                               break;
                   }
-                  if(shutdown_)
-                        return ;
+                  if (shutdown_)
+                        return;
                   request = request_queue_.front();
                   request_queue_.pop_front();
             }

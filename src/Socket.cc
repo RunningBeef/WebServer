@@ -12,7 +12,7 @@ ServerSocket::
 
 ServerSocket::~ServerSocket()
 {
-      if(server_sockfd_ != -1)
+      if (server_sockfd_ != -1)
             close(server_sockfd_);
 }
 
@@ -68,16 +68,18 @@ ClientSocket::ClientSocket() : client_sockfd_(-1)
 }
 ClientSocket::~ClientSocket()
 {
-      if(client_sockfd_ != -1)
+      if (client_sockfd_ != -1)
             close(client_sockfd_);
 }
 
-void ClientSocket::setRecvBuffSize(){
+void ClientSocket::setRecvBuffSize()
+{
       int buff_size = RCV_BUF_SIZE;
-      setsockopt(client_sockfd_,SOL_SOCKET,SO_RCVBUF,&buff_size,sizeof(buff_size));
+      setsockopt(client_sockfd_, SOL_SOCKET, SO_RCVBUF, &buff_size, sizeof(buff_size));
 }
 
-void ClientSocket::setSendBuffSize(){
+void ClientSocket::setSendBuffSize()
+{
       int buff_size = SND_BUF_SIZE;
-      setsockopt(client_sockfd_,SOL_SOCKET,SO_SNDBUF,&buff_size,sizeof(buff_size));
+      setsockopt(client_sockfd_, SOL_SOCKET, SO_SNDBUF, &buff_size, sizeof(buff_size));
 }

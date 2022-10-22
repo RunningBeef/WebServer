@@ -11,20 +11,20 @@
 
 // listen_fd EPOLL_ET | EPOLL_IN
 // client_fd EPOLL_ET | EPOLL_IN | EPOLL_OENSHOUT  ? EPOLL_OUT
-class Epoll{
-
+class Epoll
+{
 public:
-      Epoll(int );
+      Epoll(int);
       ~Epoll();
       int wait(int timeout);
-      void addFd(int fd, struct epoll_event * event);
-      void delFd(int fd, struct epoll_event * event);
-      void modFd(int fd, struct epoll_event * event);
-      int setNonBlocking(int );
+      void addFd(int fd, struct epoll_event *event);
+      void delFd(int fd, struct epoll_event *event);
+      void modFd(int fd, struct epoll_event *event);
+      int setNonBlocking(int);
 
 private:
       int epoll_fd_;
       int event_size_;
-      struct epoll_event * events_;
+      struct epoll_event *events_;
 };
 #endif
