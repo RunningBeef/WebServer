@@ -3,12 +3,13 @@
 #include <string>
 #include <unordered_map>
 #include <iostream>
-
+#include "ParseHttpRequest.h"
 std::ostream & operator << (std::ostream & cout, HttpRequest & httpRequest);
 class HttpRequest
 {
 public:
       friend std::ostream & operator << (std::ostream & cout, HttpRequest & HttpRequest);
+      friend ParseHttpRequest;
 enum class HttpMethod
       {
             KGet = 0,
