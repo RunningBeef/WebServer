@@ -5,6 +5,7 @@
 #define END '\0'
 
 #include "HttpRequest.h"
+#include "ParseString.h"
 class ParseHttpRequest
 {
 public:

@@ -4,6 +4,6 @@
 #define SPACE ' '
 #define END '\0'
 
-int getWordEnd(char * s,int start,int end);
+void locateWordIndex(char * s,int &start,int &end);
 
 #endif

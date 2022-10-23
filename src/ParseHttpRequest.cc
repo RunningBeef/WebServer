@@ -30,6 +30,8 @@ parseOneLine(char * buffer, int &uncheck, int & end)
 ParseHttpRequest::HttpParseState ParseHttpRequest::
 parseRequestLine(char * buffer,int & checked,int & uncheck, HttpRequest &HttpRequest)
 {
-      int id = checked + 1;
-      
+      int wordStartId = checked + 1;
+      int wordEndId = uncheck - 1;
+      locateWordIndex(buffer,wordStartId,wordEndId);
+      std::string httpMethod(buffer + wordStartId,buffer + wordEndId);
 }
