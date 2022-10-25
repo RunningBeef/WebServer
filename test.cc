@@ -1,18 +1,14 @@
 #include<bits/stdc++.h>
 using namespace std;
-enum class test
-{
-      KHello = 0,
-      KWorld,
-      KWhat,
-      KWhy,
-      KL,
-      KA,
-      KB,
-      KC
-};
+char str[20] = "hello";
 int main(){
-      test x = test::KC;
-      cout << sizeof(x) << endl;
+      string s(str,str + 20);
+      cout << s << endl;
+      istringstream is(s);
+
+      while(is >> s)
+      {
+            cout << "hello " << s << "end" << endl;
+      }
       return 0;
 }

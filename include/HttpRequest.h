@@ -21,7 +21,8 @@ enum class HttpMethod
       KConnect,
       KMethodNotSupport
 };
-enum class HttpVersion {
+enum class HttpVersion
+{
       KHttp1_0 = 0,
       KHttp1_1,
       KVersionNotSupport
@@ -58,11 +59,21 @@ public:
 
       static std::unordered_map<std::string, HttpHeader> string_to_http_header;
       static std::unordered_map<std::string, HttpMethod> string_to_http_method;
+      void setMethod(HttpMethod);
+      void setUrl(std::string &);
+      void setHttpVersion(HttpVersion);
+      void setHttpBody(std::string &);
+
+      HttpMethod getHttpMethod();
+      std::string getHttpUrl();
+      HttpVersion getHttpVersion();
+      std::string getHttpBody();
+
 private:
       HttpMethod method_;
       std::string url_;
       HttpVersion http_version_;
       std::string body_;
-      std::unordered_map<HttpHeader, std::pair<std::string, std::string> > httpHeader_;
+      std::unordered_map<HttpHeader, std::pair<std::string, std::string>> http_header_;
 };
 #endif

@@ -6,16 +6,18 @@
 
 #include "HttpRequest.h"
 #include "ParseString.h"
+#include <sstream>
 class ParseHttpRequest
 {
 public:
       enum class HttpParseState
       {
-            KRequestLine = 0,
-            KRequestHeader,
-            KRequestBody,
+            KParseLine = 0,
+            KParseHeader,
+            KParseBody,
             KRequestOk,
-            KRequestBad
+            KRequestBad,
+            KInternalError
       };
       enum class LineStatus
       {
@@ -23,10 +25,16 @@ public:
             KLineOk,
             KLineBad,
       };
-      LineStatus parseOneLine(char *buffer, int &uncheck, int &end);
-      HttpParseState parseRequestLine(char *buffer, int &checked, int &uncheck, HttpRequest & httpRequest);
-      HttpParseState parseRequestHeader(char *buffer, int &checked, int &uncheck, HttpRequest & httpRequest);
-      HttpParseState parseRequestBody(char &buffer, int &checked, int &uncheck, HttpRequest & httpRequest);
-      HttpParseState parseHttpRequest(char *buffer, int &checked, int &uncheck, HttpRequest & httpRequest);
+      LineStatus parseOneLine();
+      void parseRequestLine(HttpParseState &parse_state);
+      void parseRequestHeader(HttpParseState &parse_state);
+      void parseRequestBody(HttpParseState &parse_state);
+      void parseHttpRequest(HttpParseState &parse_state);
+private:
+      HttpRequest & http_request;
+      int checked;
+      int uncheck;
+      int end;//需要对外提供
+      char * buffer;
 };
 #endif
