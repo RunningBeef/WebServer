@@ -7,9 +7,6 @@ ThreadPool<T>::
 {
       if (thread_num_ <= 0 || max_request_ <= 0)
       {
-            // TODO会有内存泄漏，这里并不会调用threadPool,Condition,Mutex的析构函数！！！
-            request_condition_.~Condition();
-            queue_locker_.~Mutex();
             throw std::exception();
       }
       if (thread_num_ > MAX_THREAD)
@@ -20,26 +17,16 @@ ThreadPool<T>::
       threads_ = new pthread_t[thread_num_];
       if (!threads_)
       {
-            request_condition_.~Condition();
-            queue_locker_.~Mutex();
             throw std::exception();
       }
       for (int i = 0; i < thread_num_; ++i)
       {
             if (pthread_create(threads + i, NULL, worker, this))
             {
-                  // TODO:内存泄漏
-                  request_condition_.~Condition();
-                  queue_locker_.~Mutex();
-                  delete[] threads_;
-                  shutdown_ = true;
                   throw ::exception();
             }
             if (pthread_detach(threads + i))
             {
-                  // TODO:内存泄漏
-                  request_condition_.~Condition();
-                  queue_locker_.~Mutex();
                   // https://blog.csdn.net/qq_33883085/article/details/89425933
                   delete[] threads_;
                   shutdown_ = true;
