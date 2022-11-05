@@ -1,8 +1,8 @@
 #include "../include/ParseHttpRequest.h"
 
 ParseHttpRequest::
-    ParseHttpRequest(HttpRequest &http_request, int &end, char *buffer)
-    : http_request_(http_request), end_(end), buffer_(buffer)
+    ParseHttpRequest(std::shared_ptr<HttpRequest> http_request_ptr, int &end, char *buffer)
+    : http_request_ptr_(http_request_ptr), end_(end), buffer_(buffer)
 {
       uncheck_ = checked_ = 0;
 }
@@ -54,19 +54,19 @@ void ParseHttpRequest::
 #endif
             parseState = HttpParseState::KRequestBad;
       }
-      http_request_.setMethod(it->second);
-      http_request_.setUrl(url);
+      http_request_ptr_->setMethod(it->second);
+      http_request_ptr_->setUrl(url);
 
       if (httpVersion == "HTTP/1.1")
-            http_request_.setHttpVersion(HttpRequest::HttpVersion::KHttp1_1);
+            http_request_ptr_->setHttpVersion(HttpRequest::HttpVersion::KHttp1_1);
       else if (httpVersion == "HTTP/1.0")
-            http_request_.setHttpVersion(HttpRequest::HttpVersion::KHttp1_0);
+            http_request_ptr_->setHttpVersion(HttpRequest::HttpVersion::KHttp1_0);
       else
       {
 #ifdef DEBUG
             cout << "!ERROR HttpVersion: " << httpVersion << "not support" << std::endl;
 #endif
-            http_request_.setHttpVersion(HttpRequest::HttpVersion::KVersionNotSupport);
+            http_request_ptr_->setHttpVersion(HttpRequest::HttpVersion::KVersionNotSupport);
             parseState = HttpParseState::KRequestBad;
       }
       parseState = HttpParseState::KParseHeader;
@@ -81,7 +81,7 @@ void ParseHttpRequest::
 {
       if (buffer_[checked_ + 1] == '\0' && buffer_[checked_ + 1] == buffer_[checked_ + 2])
       {
-            if (http_request_.getHttpMethod() == HttpRequest::HttpMethod::KGet) // GET请求一般没有请求体
+            if (http_request_ptr_->getHttpMethod() == HttpRequest::HttpMethod::KGet) // GET请求一般没有请求体
             {
                   parse_state = HttpParseState::KRequestOk;
             }
@@ -102,7 +102,7 @@ void ParseHttpRequest::
       }
       else
       {
-            http_request_.http_header_[it->second] = std::pair<std::string, std::string>(key, value);
+            http_request_ptr_->http_header_[it->second] = std::pair<std::string, std::string>(key, value);
       }
 }
 
@@ -110,7 +110,7 @@ void ParseHttpRequest::
     parseRequestBody(HttpParseState &httpParseState)
 {
       std::string body(buffer_ + checked_ + 1, buffer_ + uncheck_);
-      http_request_.setHttpBody(body);
+      http_request_ptr_->setHttpBody(body);
 }
 
 void ParseHttpRequest::

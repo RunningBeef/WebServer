@@ -7,7 +7,7 @@
 #include "ParseHttpRequest.h"
 
 class ParseHttpRequest;
-
+//https://zhuanlan.zhihu.com/p/397151734 http各个版本介绍
 class HttpRequest
 {
       friend std::ostream &operator<<(std::ostream &out, const HttpRequest &HttpRequest);
@@ -29,7 +29,14 @@ public:
       enum HttpVersion
       {
             KHttp1_0 = 0,
+            /* 如今仍然广泛使用，默认短连接，
+            所以有些浏览器会加上Connection: keep-alive
+             */
             KHttp1_1,
+            /* 默认长连接，客户端最后一个请求发送Connection: close
+               后续需要支持
+               管道机制
+               文件断点续传 */
             KVersionNotSupport
       };
       enum HttpRequestHeader

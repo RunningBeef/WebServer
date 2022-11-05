@@ -1,8 +1,9 @@
 #include "../include/ParseHttpResponse.h"
 
 ParseHttpResponse::
-    ParseHttpResponse(HttpRequest &http_request, HttpResponse &http_response)
-    : http_request_(http_request), http_response_(http_response)
+    ParseHttpResponse(std::shared_ptr<HttpRequest> http_request_ptr,
+                      std::shared_ptr<HttpResponse> http_response_ptr)
+    : http_request_ptr_(http_request_ptr), http_response_ptr_(http_response_ptr)
 {
 }
 

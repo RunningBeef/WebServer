@@ -7,10 +7,10 @@ class HttpResponse;
 
 class ParseHttpResponse{
 public:
-      ParseHttpResponse(HttpRequest & http_request, HttpResponse & http_response);
+      ParseHttpResponse(std::shared_ptr<HttpRequest> http_request_ptr, std::shared_ptr<HttpResponse> http_response_ptr);
       void parse();
-      HttpRequest & http_request_;
-      HttpResponse & http_response_;
+      std::shared_ptr<HttpRequest> http_request_ptr_;
+      std::shared_ptr<HttpResponse> http_response_ptr_;
 };
 
 #endif

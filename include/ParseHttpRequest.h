@@ -7,6 +7,7 @@
 #include "HttpRequest.h"
 #include "ParseString.h"
 #include <sstream>
+#include <memory>
 
 enum class HttpParseState
 {
@@ -26,7 +27,7 @@ enum class LineStatus
 class ParseHttpRequest
 {
 public:
-      ParseHttpRequest(HttpRequest & http_request, int &end, char * buffer);
+      ParseHttpRequest(std::shared_ptr<HttpRequest> http_request_ptr, int &end, char * buffer);
       LineStatus parseOneLine();
       void parseRequestLine(HttpParseState &parse_state);
       void parseRequestHeader(HttpParseState &parse_state);
@@ -34,7 +35,7 @@ public:
       void parseRequest(HttpParseState &parse_state);
 
 private:
-      HttpRequest &http_request_;
+      std::shared_ptr<HttpRequest> http_request_ptr_;
       int checked_;
       int uncheck_;
       int &end_; //需要外面提供
