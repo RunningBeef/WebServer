@@ -2,13 +2,11 @@
 using namespace std;
 char str[20] = "hello";
 int main(){
-      string s(str,str + 20);
-      cout << s << endl;
-      istringstream is(s);
-
-      while(is >> s)
+      shared_ptr<int> t = make_shared<int>(10);
+      t.reset();
+      if(t)
       {
-            cout << "hello " << s << "end" << endl;
-      }
+            cout << "not null" << endl;
+      }else cout << "null" << endl;
       return 0;
 }
