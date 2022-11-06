@@ -2,6 +2,10 @@
 #define TIMER_H
 #include "HttpData.h"
 #include "Mutex.h"
+#include <queue>
+#define MAX_TRICK
+#define DEFAULT_KEEP_ALIVE_TIME
+#define DEFAULT_KEEP_ALIVE_MAX
 /*
 ## 长连接实现
 ①简单版本
@@ -25,11 +29,11 @@ template<class T>
 class TimerNode
 {
 public:
-      TimerNode(std::shared_ptr<HttpData> http_data_ptr);
+      TimerNode(std::shared_ptr<T> task_ptr);
       ~TimerNode();
 private:
       //定时器通用化，可以使用模板类，如果参数个数不确定，也可以使用可变参数模板
-      std::shared_ptr<void> task;
+      std::shared_ptr<void> task_ptr;
       size_t out_time_;
       //bool is_break;//旧连接再次请求时标记为断开，可以直接对http_data reset 后判空就行
 };
@@ -41,6 +45,7 @@ public:
       void append(std::shared_ptr<TimerNode<T>>);
       void trick();
 private:
+      priority_queue<TimerNode<T>> timer_queue_;
       int max_trick_;//设置trick 每次最多可以处理的定时任务
       Mutex mutex_;
 };
