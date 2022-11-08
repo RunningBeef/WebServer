@@ -42,7 +42,6 @@ public:
       {
 
       };
-      static std::unordered_map<std::string, HttpResponseHeader> stringToResponseHeaderMap;
       HttpResponse();
       ~HttpResponse() = default;
 
@@ -50,8 +49,8 @@ private:
       HttpRequest::HttpVersion http_version_;
       StatueCode statue_code_;
       std::string reason_phrase_;
-      static std::unordered_map<HttpResponseHeader, std::pair<std::string, std::string>> response_header_map_;
-      char *body_;
+      std::unordered_map<std::string,std::string> response_header_map_;
+      std::string http_response_;
 };
 
 #endif

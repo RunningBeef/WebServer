@@ -2,7 +2,6 @@
 #define TIMER_H
 
 #include "Mutex.h"
-#include "HttpData.h"
 #include <queue>
 #include <memory>
 #include <vector>
