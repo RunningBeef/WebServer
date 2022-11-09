@@ -7,13 +7,13 @@
 #include "ParseHttpRequest.h"
 
 class ParseHttpRequest;
-//https://zhuanlan.zhihu.com/p/397151734 http各个版本介绍
 class HttpRequest
 {
       friend std::ostream &operator<<(std::ostream &out, const HttpRequest &HttpRequest);
       friend ParseHttpRequest;
 
 public:
+      // 目前支持GET,HEAD,POST
       enum HttpMethod
       {
             KGet = 0,
@@ -26,20 +26,24 @@ public:
             KConnect,
             KMethodNotSupport
       };
+      /*
+      https://zhuanlan.zhihu.com/p/397151734 http各个版本介绍
+      HTTP/1.0如今仍然广泛使用，默认短连接，
+      所以有些浏览器会加上Connection: keep-alive表示长连接
+      HTTP1.1默认长连接
+      后续需要支持管道机制,文件断点续传
+      客户端最后一个请求发送Connection: close
+      */
       enum HttpVersion
       {
             KHttp1_0 = 0,
-            /* 如今仍然广泛使用，默认短连接，
-            所以有些浏览器会加上Connection: keep-alive
-             */
             KHttp1_1,
-            /* 默认长连接，客户端最后一个请求发送Connection: close
-               后续需要支持
-               管道机制
-               文件断点续传 */
             KVersionNotSupport
       };
-      enum HttpRequestHeader
+
+      // Http首部字段分为 通用首部，请求首部（请求专用），响应首部（响应专用），实体首部
+      //这里只列出部分需要使用的
+      enum HttpRequestHeader //只列出少部分
       {
             KHost = 0,
             //存放具体站点信息，一个IP地址（虚拟机）可以部署多个站点，根据HOST来区分具体站点
@@ -57,15 +61,22 @@ public:
             //是否可缓存，以及过期时间
             KUpGrade_Insecure_Request,
             //表示用户对加密和认证响应的
-            KCookie
+            KCookie,
+            //实体长度
+            KContent_Length,
+            //实体类型
+            KContent_Type
       };
 
-      HttpRequest(HttpMethod method = HttpMethod::KMethodNotSupport, std::string url = "/",
-                  HttpVersion http_version = HttpVersion::KVersionNotSupport, std::string body = "");
+      const static std::unordered_map<std::string, HttpRequestHeader> KRequestHeaderMap;
+      const static std::unordered_map<std::string, HttpMethod> KHttpMethodMap;
+      const static std::vector<std::string> request_header_v;
+      const static std::vector<std::string> http_version_v;
+      HttpRequest();
+      HttpRequest(const HttpRequest &) = default;
+      HttpRequest &operator=(const HttpRequest &) = default;
       ~HttpRequest() = default;
 
-      static std::unordered_map<std::string, HttpRequestHeader> string_to_http_header;
-      static std::unordered_map<std::string, HttpMethod> string_to_http_method;
       void setMethod(HttpMethod);
       void setUrl(std::string &);
       void setHttpVersion(HttpVersion);
@@ -81,7 +92,7 @@ private:
       std::string url_;
       HttpVersion http_version_;
       std::string body_;
-      std::unordered_map<HttpRequestHeader, std::pair<std::string, std::string>> http_header_;
-      HttpParseState parseResult;
+      std::unordered_map<HttpRequestHeader, std::string> http_header_;
+      ParseHttpRequest::HttpParseState parseResult;
 };
 #endif

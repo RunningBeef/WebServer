@@ -4,7 +4,7 @@ ParseHttpRequest::
     ParseHttpRequest(std::shared_ptr<HttpRequest> http_request_ptr, int &end, char *buffer)
     : http_request_ptr_(http_request_ptr), end_(end), buffer_(buffer)
 {
-      uncheck_ = checked_ = 0;
+      body_length_ = uncheck_ = checked_ = 0;
 }
 LineStatus ParseHttpRequest::
     parseOneLine()
@@ -34,8 +34,9 @@ LineStatus ParseHttpRequest::
 }
 
 void ParseHttpRequest::
-    parseRequestLine(HttpParseState &parseState)
+    parseRequestLine()
 {
+      HttpParseState &parseState = http_request_ptr_->parseResult;
       std::string requestLine(buffer_ + checked_ + 1, buffer_ + uncheck_);
       // 不用buffer + unchecked - 2 后面'\0' 会在is >> httpVersion是过滤掉
       std::istringstream is(requestLine);
@@ -46,8 +47,8 @@ void ParseHttpRequest::
            << "url: " << url << "\t"
            << "httpVersion: " << httpVersion << std::endl;
 #endif
-      auto it = HttpRequest::string_to_http_method.find(method);
-      if (it == HttpRequest::string_to_http_method.end())
+      auto it = HttpRequest::KHttpMethodMap.find(method);
+      if (it == HttpRequest::KHttpMethodMap.end())
       {
 #ifdef DEBUG
             cout << "!ERROR Method: " << method << "not support" << std::endl;
@@ -77,14 +78,11 @@ void ParseHttpRequest::
 // 我们每次都从socket缓冲区读到的数据中解析出一个以CRLF结尾的一行字符串，解析的时候把CRLF替换为'\0'方便处理
 // 所以当读取到一个CRLF('\0''\0')我们可以断定头部部分已经结束了
 void ParseHttpRequest::
-    parseRequestHeader(HttpParseState &parse_state)
+    parseRequestHeader()
 {
+      HttpParseState &parse_state = http_request_ptr_->parseResult;
       if (buffer_[checked_ + 1] == '\0' && buffer_[checked_ + 1] == buffer_[checked_ + 2])
       {
-            if (http_request_ptr_->getHttpMethod() == HttpRequest::HttpMethod::KGet) // GET请求一般没有请求体
-            {
-                  parse_state = HttpParseState::KRequestOk;
-            }
             parse_state = HttpParseState::KParseBody;
             return;
       }
@@ -93,8 +91,8 @@ void ParseHttpRequest::
       std::string key, value;
       is >> key >> value;
       key.pop_back();
-      auto it = HttpRequest::string_to_http_header.find(key);
-      if (it == HttpRequest::string_to_http_header.end())
+      auto it = HttpRequest::KRequestHeaderMap.find(key);
+      if (it == HttpRequest::KRequestHeaderMap.end())
       {
 #ifdef DEBUG
             cout << "!ERROR head: " << key << "not found" << std::endl;
@@ -102,13 +100,24 @@ void ParseHttpRequest::
       }
       else
       {
-            http_request_ptr_->http_header_[it->second] = std::pair<std::string, std::string>(key, value);
+            http_request_ptr_->http_header_[it->second] = value;
+            if(it->second == HttpRequest::HttpRequestHeader::KContent_Length)
+            {
+                  body_length_ = atol(value.c_str());
+            }
       }
 }
 
 void ParseHttpRequest::
-    parseRequestBody(HttpParseState &httpParseState)
+    parseRequestBody()
 {
+      HttpParseState & parse_state = http_request_ptr_->parseResult;
+      if (http_request_ptr_->getHttpMethod() == HttpRequest::HttpMethod::KGet) // GET请求一般没有请求体
+      {
+            parse_state = HttpParseState::KGetRequest;
+            return;
+      }
+      if(uncheck)
       std::string body(buffer_ + checked_ + 1, buffer_ + uncheck_);
       http_request_ptr_->setHttpBody(body);
 }
@@ -134,4 +143,10 @@ void ParseHttpRequest::
                   return;
             }
       }
+}
+
+void ParseHttpRequest::parse()
+{
+      char buffer[BUFFERSIZE];
+      bzero(buffer, BUFFERSIZE);
 }
