@@ -26,6 +26,7 @@ public:
       static void postRegister(ParseHttpResponse *);
 
 private:
+      std::string ErrorPath;
       std::shared_ptr<ClientSocket> client_ptr_;
       std::shared_ptr<HttpRequest> http_request_ptr_;
       std::shared_ptr<HttpResponse> http_response_ptr_;
