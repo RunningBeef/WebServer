@@ -1,4 +1,4 @@
-#ifndef HTTTPREQUEST_H
+#ifndef HTTPREQUEST_H
 #define HTTPREQUEST_H
 #include <string>
 #include <unordered_map>
@@ -86,7 +86,7 @@ public:
       std::string getHttpUrl();
       HttpVersion getHttpVersion();
       std::string getHttpBody();
-
+      ParseHttpRequest::HttpParseState getParseResult();
 private:
       HttpMethod method_;
       std::string url_;

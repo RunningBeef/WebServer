@@ -1,5 +1,5 @@
 #include "../include/HttpRequest.h"
-const std::unordered_map<std::string,HttpRequest:: HttpRequestHeader> HttpRequest::KRequestHeaderMap = {
+const std::unordered_map<std::string, HttpRequest::HttpRequestHeader> HttpRequest::KRequestHeaderMap = {
     {"Accept", HttpRequestHeader::KAccept},
     {"Accept-Language", HttpRequestHeader::KAccept_Language},
     {"Accept-Encoding", HttpRequestHeader::KAccept_Encoding},
@@ -8,8 +8,8 @@ const std::unordered_map<std::string,HttpRequest:: HttpRequestHeader> HttpReques
     {"Host", HttpRequestHeader::KHost},
     {"Upgrade-Insecure-Request", HttpRequestHeader::KUpGrade_Insecure_Request},
     {"User-Agent", HttpRequestHeader::KUser_Agent},
-    {"Content-Length",HttpRequestHeader::KContent_Length},
-    {"Content-Type",HttpRequestHeader::KContent_Type}};
+    {"Content-Length", HttpRequestHeader::KContent_Length},
+    {"Content-Type", HttpRequestHeader::KContent_Type}};
 const std::unordered_map<std::string, HttpRequest::HttpMethod> HttpRequest::KHttpMethodMap = {
     {"GET", HttpMethod::KGet},
     {"HEAD", HttpMethod::KHead},
@@ -24,9 +24,8 @@ const std::unordered_map<std::string, HttpRequest::HttpMethod> HttpRequest::KHtt
 const std::vector<std::string> http_version_v = {
     "HTTP/1.0",
     "HTTP/1.1",
-    "RequestNotSupport"
-};
-const std::vector<std::string> request_header_v ={
+    "RequestNotSupport"};
+const std::vector<std::string> request_header_v = {
     "Accept",
     "Accept-Language",
     "Accept-Encoding",
@@ -34,8 +33,7 @@ const std::vector<std::string> request_header_v ={
     "Cookie",
     "Host",
     "Upgrade-Insecure-Request",
-    "User-Agent"
-};
+    "User-Agent"};
 
 void HttpRequest::setMethod(HttpMethod method)
 {
@@ -74,17 +72,21 @@ std::string HttpRequest::getHttpBody()
 
 HttpRequest::
     HttpRequest()
-    : method_(HttpMethod::KMethodNotSupport), http_version_(HttpVersion::KVersionNotSupport),parseResult(HttpParseState::KParseLine)
+    : method_(HttpMethod::KMethodNotSupport), http_version_(HttpVersion::KVersionNotSupport), parseResult(ParseHttpRequest::HttpParseState::KParseLine)
 {
 }
+ParseHttpRequest::HttpParseState HttpRequest:: getParseResult()
+{
+    return parseResult;
+}
 
-std::ostream &operator<<(std::ostream &out,const HttpRequest &httpRequest)
+std::ostream &operator<<(std::ostream &out, const HttpRequest &httpRequest)
 {
     // 这里如果把HttpVersion枚举定义成enum HttpVersion class{}
     // 这里的输出HttpVersion:就会产生no operator << match these operands 错误
     // 但是HttpMethod 却不会报错，很疑惑？
     out << "method: " << httpRequest.method_ << "\turl: " << httpRequest.url_
-         << "\tHttpVersion: " << http_version_v[httpRequest.http_version_] << std::endl;
+        << "\tHttpVersion: " << http_version_v[httpRequest.http_version_] << std::endl;
     for (auto it : httpRequest.http_header_)
     {
         out << request_header_v[it.first] << ": " << it.second << std::endl;

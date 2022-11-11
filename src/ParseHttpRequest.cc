@@ -6,7 +6,7 @@ ParseHttpRequest::
 {
       body_length_ = uncheck_ = checked_ = 0;
 }
-LineStatus ParseHttpRequest::
+ParseHttpRequest::LineStatus ParseHttpRequest::
     parseOneLine()
 {
       for (; uncheck_ < end_; ++uncheck_)
@@ -53,7 +53,7 @@ void ParseHttpRequest::
 #ifdef DEBUG
             cout << "!ERROR Method: " << method << "not support" << std::endl;
 #endif
-            parseState = HttpParseState::KRequestBad;
+            parseState = HttpParseState::KBadRequest;
       }
       http_request_ptr_->setMethod(it->second);
       http_request_ptr_->setUrl(url);
@@ -68,7 +68,7 @@ void ParseHttpRequest::
             cout << "!ERROR HttpVersion: " << httpVersion << "not support" << std::endl;
 #endif
             http_request_ptr_->setHttpVersion(HttpRequest::HttpVersion::KVersionNotSupport);
-            parseState = HttpParseState::KRequestBad;
+            parseState = HttpParseState::KBadRequest;
       }
       parseState = HttpParseState::KParseHeader;
 }
@@ -101,7 +101,7 @@ void ParseHttpRequest::
       else
       {
             http_request_ptr_->http_header_[it->second] = value;
-            if(it->second == HttpRequest::HttpRequestHeader::KContent_Length)
+            if (it->second == HttpRequest::HttpRequestHeader::KContent_Length)
             {
                   body_length_ = atol(value.c_str());
             }
@@ -111,42 +111,70 @@ void ParseHttpRequest::
 void ParseHttpRequest::
     parseRequestBody()
 {
-      HttpParseState & parse_state = http_request_ptr_->parseResult;
+      HttpParseState &parse_state = http_request_ptr_->parseResult;
       if (http_request_ptr_->getHttpMethod() == HttpRequest::HttpMethod::KGet) // GET请求一般没有请求体
       {
             parse_state = HttpParseState::KGetRequest;
             return;
       }
-      if(uncheck)
-      std::string body(buffer_ + checked_ + 1, buffer_ + uncheck_);
-      http_request_ptr_->setHttpBody(body);
+      if (checked_ + body_length_ > end_)
+      {
+            return;
+      }
+      std::string body(buffer_ + checked_ + 1, buffer_ + end_);
+      http_request_ptr_->body_ = body;
 }
 
 void ParseHttpRequest::
-    parseRequest(HttpParseState &parse_state)
+    parseRequest()
 {
+      HttpParseState &parse_state = http_request_ptr_->parseResult;
       LineStatus line_state = LineStatus::KLineOk;
       while ((line_state = parseOneLine()) == LineStatus::KLineOk)
       {
             switch (parse_state)
             {
             case HttpParseState::KParseLine:
-                  parseRequestLine(parse_state);
+                  parseRequestLine();
                   break;
             case HttpParseState::KParseHeader:
-                  parseRequestHeader(parse_state);
+                  parseRequestHeader();
                   break;
             case HttpParseState::KParseBody:
-                  parseRequestBody(parse_state);
+                  parseRequestBody();
                   break;
             default:
-                  return;
+                  return ;
             }
       }
 }
 
-void ParseHttpRequest::parse()
+//使用ET
+bool ParseHttpRequest::parse()
 {
       char buffer[BUFFERSIZE];
       bzero(buffer, BUFFERSIZE);
+      while (true)
+      {
+            int bytes_read = recv(client_ptr_->getClientSocket(), buffer + end_, BUFFERSIZE - end_, 0);
+            if (bytes_read == -1)
+            {
+                  if (errno == EAGAIN || errno == EWOULDBLOCK)
+                        break;
+                  return false;
+            }
+            else if (bytes_read == 0)
+            {
+                  return false;
+            }
+            end_ += bytes_read;
+            parseRequest();
+            switch (http_request_ptr_->parseResult)
+            {
+            case HttpParseState::KGetRequest: return true;
+            case HttpParseState::KInternalError: return false;
+            case HttpParseState::KBadRequest: return false;
+            }
+      }
+      return true;
 }

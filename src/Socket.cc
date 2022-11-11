@@ -83,3 +83,12 @@ void ClientSocket::setSendBuffSize()
       int buff_size = SND_BUF_SIZE;
       setsockopt(client_sockfd_, SOL_SOCKET, SO_SNDBUF, &buff_size, sizeof(buff_size));
 }
+
+void ClientSocket::setClientSocket(int sockfd)
+{
+      client_sockfd_ = sockfd;
+}
+int ClientSocket::getClientSocket()
+{
+      return client_sockfd_;
+}

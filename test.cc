@@ -2,6 +2,7 @@
 using namespace std;
 char str[20] = "hello";
 int main(){
-      string s = "b";
-      cout << sizeof(s) << endl;
+      shared_ptr<string> p;
+
+      cout << sizeof(p) << endl;
 }

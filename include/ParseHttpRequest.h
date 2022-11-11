@@ -9,7 +9,9 @@
 #include <sstream>
 #include <memory>
 #include <string.h>
-
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <Socket.h>
 class ParseHttpRequest
 {
 public:
@@ -19,7 +21,7 @@ public:
             KParseHeader,
             KParseBody,
             KGetRequest,
-            KRequestBad,
+            KBadRequest,
             KInternalError
       };
       enum class LineStatus
@@ -34,10 +36,12 @@ public:
       void parseRequestHeader();
       void parseRequestBody();
       void parseRequest();
-      void parse();
+      bool parse();
+      void readRequest();
 
 private:
       std::shared_ptr<HttpRequest> http_request_ptr_;
+      std::shared_ptr<ClientSocket> client_ptr_;
       int checked_;
       int uncheck_;
       int end_;

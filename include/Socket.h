@@ -40,7 +40,8 @@ public:
       ~ClientSocket();
       void setSendBuffSize(); //记得修改发送缓冲区大小
       void setRecvBuffSize();
-
+      void setClientSocket(int );
+      int getClientSocket();
 private:
       int client_sockfd_;
       struct sockaddr_in client_address_;
