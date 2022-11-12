@@ -1,4 +1,4 @@
-#include "../include/ThreadPool.h"
+#include "ThreadPool.h"
 template <class T>
 ThreadPool<T>::
     ThreadPool(int thread_num = 8, int max_request = 10000)

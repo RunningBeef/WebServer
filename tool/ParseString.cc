@@ -1,4 +1,4 @@
-#include "../include/ParseString.h"
+#include "ParseString.h"
 
 void locateWordIndex(char * s,int &start,int &end)
 {

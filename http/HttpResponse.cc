@@ -1,4 +1,4 @@
-#include "../include/HttpResponse.h"
+#include "HttpResponse.h"
 
 const std::unordered_map<int, std::string>
     HttpResponse::KStateCodeMap =
@@ -40,7 +40,7 @@ std::ostream &operator<<(std::ostream &out, const HttpResponse &httpResponse)
 {
       out << "HttpVersion: " << httpResponse.http_version_
           << "\tStatue_code: " << httpResponse.statue_code_
-          << "\tReason_phrase: " << HttpResponse::KStateCodeMap.find(httpResponse.reason_phrase_id_)->first
+          << "\tReason_phrase: " << HttpResponse::KStateCodeMap.find(httpResponse.statue_code_)->first
           << std::endl;
       for (auto it : httpResponse.response_header_map_)
       {

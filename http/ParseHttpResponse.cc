@@ -1,4 +1,4 @@
-#include "../include/ParseHttpResponse.h"
+#include "ParseHttpResponse.h"
 /*
     支持GET/POST，
     查找输出静态文件
@@ -48,25 +48,27 @@ void ParseHttpResponse::checkFile()
 {
     std::string file_path = KBasePath + http_request_ptr_->getHttpUrl();
     struct stat buf;
-    if(stat(file_path.c_str(),&buf))
+    if (stat(file_path.c_str(), &buf))
     {
         error_path_ = "Not Found";
     }
     else
     {
-        
+        http_response_ptr_->statue_code_ = 200;
+        http_response_ptr_->http_version_ = HttpRequest::HttpVersion::KHttp1_1;
     }
 }
 
 void ParseHttpResponse::checkInterface()
 {
-    if(!KPostUrlFuncMap.count(http_request_ptr_->getHttpUrl()))
+    if (!KPostUrlFuncMap.count(http_request_ptr_->getHttpUrl()))
     {
         error_path_ = "Not Found";
     }
     else
     {
-
+        http_response_ptr_->statue_code_ = 200;
+        http_response_ptr_->http_version_ = HttpRequest::HttpVersion::KHttp1_1;
     }
 }
 
@@ -76,14 +78,17 @@ void ParseHttpResponse::appendStateLine()
     HttpRequest::HttpMethod method = http_request_ptr_->getHttpMethod();
     switch (method)
     {
-    case HttpRequest::HttpMethod::KGet:checkFile();
-    case HttpRequest::HttpMethod::KPost:checkInterface();
+    case HttpRequest::HttpMethod::KGet:
+        checkFile();
+    case HttpRequest::HttpMethod::KPost:
+        checkInterface();
     default:
         error_path_ = "Method Not Allowed";
     }
 }
 void ParseHttpResponse::appendHeader()
 {
+    if()
 }
 void ParseHttpResponse::appendBody()
 {
@@ -99,7 +104,7 @@ void ParseHttpResponse::parse()
         /* 断开连接 关闭资源*/
         return;
     }
-    appendStateLine();
+    appendtSateLine();
     appendHeader();
     appendBody();
     writeResponse();

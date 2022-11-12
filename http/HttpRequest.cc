@@ -1,4 +1,4 @@
-#include "../include/HttpRequest.h"
+#include "HttpRequest.h"
 const std::unordered_map<std::string, HttpRequest::HttpRequestHeader> HttpRequest::KRequestHeaderMap = {
     {"Accept", HttpRequestHeader::KAccept},
     {"Accept-Language", HttpRequestHeader::KAccept_Language},

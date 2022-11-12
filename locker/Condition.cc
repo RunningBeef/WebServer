@@ -1,4 +1,4 @@
-#include "../include/Condition.h"
+#include "Condition.h"
 
 Condition::Condition(Mutex &mutex) : mutex_reference_(mutex)
 {

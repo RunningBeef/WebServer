@@ -1,8 +1,8 @@
 #ifndef THREADPOOL_H
 #define THREADPOOL_H
 
-#include "Condition.h"
-#include "Mutex.h"
+#include "../locker/Condition.h"
+#include "../locker/Mutex.h"
 #include <queue>
 #include <pthread.h>
 #include <exception>

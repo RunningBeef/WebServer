@@ -1,4 +1,4 @@
-#include "../include/Timer.h"
+#include "Timer.h"
 
 TimerNode::TimerNode(std::shared_ptr<cbTask> cb_task_ptr, size_t interval = DEFAULT_KEEP_ALIVE_TIME)
     : cb_task_ptr_(cb_task_ptr)

@@ -16,7 +16,7 @@ class HttpResponse
 public:
 
 
-      enum HttpResponseHeader
+      enum class HttpResponseHeader
       {
             KConnection = 0,
             KKeep_alive,
@@ -32,7 +32,6 @@ public:
 private:
       HttpRequest::HttpVersion http_version_;
       int statue_code_;
-      int reason_phrase_id_;
       std::unordered_map<std::string, std::string> response_header_map_;
 };
 

@@ -1,4 +1,4 @@
-#include "../include/Socket.h"
+#include "Socket.h"
 
 ServerSocket::
     ServerSocket(const char *ip = NULL, int port = 80, int backlog = 1024)
