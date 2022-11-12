@@ -34,9 +34,7 @@ const std::unordered_map<std::string, std::string>
             {".js", "text/javascript "},
 };
 
-const std::unordered_map<std::string, std::string> HttpResponse::KErrorPageMap = {
 
-};
 
 std::ostream &operator<<(std::ostream &out, const HttpResponse &httpResponse)
 {

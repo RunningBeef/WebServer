@@ -29,7 +29,6 @@ public:
       ~HttpResponse() = default;
       const static std::unordered_map<int, std::string> KStateCodeMap;
       const static std::unordered_map<std::string, std::string> KFileTypeMap;
-      const static std::unordered_map<std::string,std::string> KErrorPageMap;
 private:
       HttpRequest::HttpVersion http_version_;
       int statue_code_;
