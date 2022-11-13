@@ -12,7 +12,7 @@ class ParseHttpResponse
 {
 
 public:
-      ParseHttpResponse(std::shared_ptr<HttpResponse> http_response_ptr, std::shared_ptr<ClientSocket> &client_socket_ptr);
+      ParseHttpResponse(std::shared_ptr<HttpResponse> &http_response_ptr, std::shared_ptr<ClientSocket> &client_socket_ptr);
       const static std::unordered_map<std::string, std::string> KFileTypeMap;
       const static std::unordered_map<std::string, std::string> KErrorPagePathMap;
       const static std::string KLineEnd;
@@ -29,8 +29,8 @@ public:
 
 private:
       //如果erro_path_被指定，则使用erro_path_对应资源回复
-      std::string error_path_;
-      std::shared_ptr<ClientSocket> &client_ptr_;
-      std::shared_ptr<HttpResponse> & http_response_ptr_;
+      std::string m_error_path_;
+      std::shared_ptr<ClientSocket> & m_client_ptr_;
+      std::shared_ptr<HttpResponse> & m_http_response_ptr_;
 };
 #endif

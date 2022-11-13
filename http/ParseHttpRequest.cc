@@ -1,46 +1,46 @@
 #include "ParseHttpRequest.h"
 
 ParseHttpRequest::
-    ParseHttpRequest(std::shared_ptr<HttpRequest> http_request_ptr, std::shared_ptr<ClientSocket> client_socket_ptr)
-    : http_request_ptr_(http_request_ptr),
-      client_socket_ptr_(client_socket_ptr)
+    ParseHttpRequest(std::shared_ptr<HttpRequest> &http_request_ptr, std::shared_ptr<ClientSocket> & client_socket_ptr)
+    : m_http_request_ptr_(http_request_ptr),
+      m_client_socket_ptr_(client_socket_ptr)
 {
       init();
-      buffer_ = new char[BUFFERSIZE];
+      m_buffer_ = new char[BUFFERSIZE];
 }
 ParseHttpRequest::~ParseHttpRequest()
 {
-      if(buffer_)
+      if(m_buffer_)
       {
-            delete buffer_;
+            delete m_buffer_;
       }
 }
 void ParseHttpRequest::init()
 {
-      checked_ = uncheck_ = end_ = body_length_ = 0;
-      bzero(buffer_, BUFFERSIZE);
+      m_checked_ = m_uncheck_ = m_end_ = m_body_length_ = 0;
+      bzero(m_buffer_, BUFFERSIZE);
 }
 ParseHttpRequest::LineStatus ParseHttpRequest::
     parseOneLine()
 {
-      for (; uncheck_ < end_; ++uncheck_)
+      for (; m_uncheck_ < m_end_; ++m_uncheck_)
       {
-            if (buffer_[uncheck_] == LF)
+            if (m_buffer_[m_uncheck_] == LF)
             {
-                  if (!uncheck_ || buffer_[uncheck_ - 1] != CR)
+                  if (!m_uncheck_ || m_buffer_[m_uncheck_ - 1] != CR)
                         return LineStatus::KLineBad;
-                  ++uncheck_;
-                  buffer_[uncheck_ - 1] = buffer_[uncheck_ - 2] = END;
+                  ++m_uncheck_;
+                  m_buffer_[m_uncheck_ - 1] = m_buffer_[m_uncheck_ - 2] = END;
                   return LineStatus::KLineOk;
             }
-            if (buffer_[uncheck_] == CR)
+            if (m_buffer_[m_uncheck_] == CR)
             {
-                  if (uncheck_ + 1 == end_)
+                  if (m_uncheck_ + 1 == m_end_)
                         return LineStatus::KLineMore;
-                  if (buffer_[uncheck_ + 1] != LF)
+                  if (m_buffer_[m_uncheck_ + 1] != LF)
                         return LineStatus::KLineBad;
-                  uncheck_ += 2;
-                  buffer_[uncheck_ - 1] = buffer_[uncheck_ - 2] = END;
+                  m_uncheck_ += 2;
+                  m_buffer_[m_uncheck_ - 1] = m_buffer_[m_uncheck_ - 2] = END;
                   return LineStatus::KLineOk;
             }
       }
@@ -50,8 +50,8 @@ ParseHttpRequest::LineStatus ParseHttpRequest::
 void ParseHttpRequest::
     parseRequestLine()
 {
-      HttpParseState &parseState = http_request_ptr_->parseResult;
-      std::string requestLine(buffer_ + checked_ + 1, buffer_ + uncheck_);
+      HttpParseState &parseState = m_http_request_ptr_->m_parseResult;
+      std::string requestLine(m_buffer_ + m_checked_ + 1, m_buffer_ + m_uncheck_);
       // 不用buffer + unchecked - 2 后面'\0' 会在is >> httpVersion是过滤掉
       std::istringstream is(requestLine);
       std::string method, url, httpVersion;
@@ -69,19 +69,19 @@ void ParseHttpRequest::
 #endif
             parseState = HttpParseState::KBadRequest;
       }
-      http_request_ptr_->setMethod(it->second);
-      http_request_ptr_->setUrl(url);
+      m_http_request_ptr_->setMethod(it->second);
+      m_http_request_ptr_->setUrl(url);
 
       if (httpVersion == "HTTP/1.1")
-            http_request_ptr_->setHttpVersion(HttpRequest::HttpVersion::KHttp1_1);
+            m_http_request_ptr_->setHttpVersion(HttpRequest::HttpVersion::KHttp1_1);
       else if (httpVersion == "HTTP/1.0")
-            http_request_ptr_->setHttpVersion(HttpRequest::HttpVersion::KHttp1_0);
+            m_http_request_ptr_->setHttpVersion(HttpRequest::HttpVersion::KHttp1_0);
       else
       {
 #ifdef DEBUG
             cout << "!ERROR HttpVersion: " << httpVersion << "not support" << std::endl;
 #endif
-            http_request_ptr_->setHttpVersion(HttpRequest::HttpVersion::KVersionNotSupport);
+            m_http_request_ptr_->setHttpVersion(HttpRequest::HttpVersion::KVersionNotSupport);
             parseState = HttpParseState::KBadRequest;
       }
       parseState = HttpParseState::KParseHeader;
@@ -94,13 +94,13 @@ void ParseHttpRequest::
 void ParseHttpRequest::
     parseRequestHeader()
 {
-      HttpParseState &parse_state = http_request_ptr_->parseResult;
-      if (buffer_[checked_ + 1] == '\0' && buffer_[checked_ + 1] == buffer_[checked_ + 2])
+      HttpParseState &parse_state = m_http_request_ptr_->m_parseResult;
+      if (m_buffer_[m_checked_ + 1] == '\0' && m_buffer_[m_checked_ + 1] == m_buffer_[m_checked_ + 2])
       {
             parse_state = HttpParseState::KParseBody;
             return;
       }
-      std::string header(buffer_ + checked_ + 1, buffer_ + uncheck_);
+      std::string header(m_buffer_ + m_checked_ + 1, m_buffer_ + m_uncheck_);
       std::istringstream is(header);
       std::string key, value;
       is >> key >> value;
@@ -114,10 +114,10 @@ void ParseHttpRequest::
       }
       else
       {
-            http_request_ptr_->http_header_[it->second] = value;
+            m_http_request_ptr_->m_http_header_[it->second] = value;
             if (it->second == HttpRequest::HttpRequestHeader::KContent_Length)
             {
-                  body_length_ = atol(value.c_str());
+                  m_body_length_ = atol(value.c_str());
             }
       }
 }
@@ -125,24 +125,24 @@ void ParseHttpRequest::
 void ParseHttpRequest::
     parseRequestBody()
 {
-      HttpParseState &parse_state = http_request_ptr_->parseResult;
-      if (http_request_ptr_->getHttpMethod() == HttpRequest::HttpMethod::KGet) // GET请求一般没有请求体
+      HttpParseState &parse_state = m_http_request_ptr_->m_parseResult;
+      if (m_http_request_ptr_->getHttpMethod() == HttpRequest::HttpMethod::KGet) // GET请求一般没有请求体
       {
             parse_state = HttpParseState::KGetRequest;
             return;
       }
-      if (checked_ + body_length_ > end_)
+      if (m_checked_ + m_body_length_ > m_end_)
       {
             return;
       }
-      std::string body(buffer_ + checked_ + 1, buffer_ + end_);
-      http_request_ptr_->body_ = body;
+      std::string body(m_buffer_ + m_checked_ + 1, m_buffer_ + m_end_);
+      m_http_request_ptr_->m_body_ = body;
 }
 
 void ParseHttpRequest::
     parseRequest()
 {
-      HttpParseState &parse_state = http_request_ptr_->parseResult;
+      HttpParseState &parse_state = m_http_request_ptr_->m_parseResult;
       LineStatus line_state = LineStatus::KLineOk;
       while ((line_state = parseOneLine()) == LineStatus::KLineOk)
       {
@@ -169,7 +169,7 @@ bool ParseHttpRequest::parse()
       init();
       while (true)
       {
-            int bytes_read = recv(client_socket_ptr_->getClientSocket(), buffer_ + end_, BUFFERSIZE - end_, 0);
+            int bytes_read = recv(m_client_socket_ptr_->getClientSocket(), m_buffer_ + m_end_, BUFFERSIZE - m_end_, 0);
             if (bytes_read == -1)
             {
                   if (errno == EAGAIN || errno == EWOULDBLOCK)
@@ -180,9 +180,9 @@ bool ParseHttpRequest::parse()
             {
                   return false;
             }
-            end_ += bytes_read;
+            m_end_ += bytes_read;
             parseRequest();
-            switch (http_request_ptr_->parseResult)
+            switch (m_http_request_ptr_->m_parseResult)
             {
             case HttpParseState::KGetRequest: return true;
             case HttpParseState::KInternalError: return false;

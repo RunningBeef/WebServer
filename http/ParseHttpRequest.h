@@ -32,7 +32,7 @@ public:
             KLineOk,
             KLineBad,
       };
-      ParseHttpRequest(std::shared_ptr<HttpRequest> http_request_ptr, std::shared_ptr<ClientSocket> client_socket_ptr);
+      ParseHttpRequest(std::shared_ptr<HttpRequest> &http_request_ptr, std::shared_ptr<ClientSocket> &client_socket_ptr);
       ~ParseHttpRequest();
       LineStatus parseOneLine();
       void parseRequestLine();
@@ -44,12 +44,13 @@ public:
       void init();
 
 private:
-      std::shared_ptr<HttpRequest> & http_request_ptr_;
-      std::shared_ptr<ClientSocket>  & client_socket_ptr_;
-      int checked_;
-      int uncheck_;
-      int end_;
-      int body_length_;
-      char *buffer_;
+      std::shared_ptr<HttpRequest> & m_http_request_ptr_;
+      std::shared_ptr<ClientSocket>  & m_client_socket_ptr_;
+      int m_checked_;
+      int m_uncheck_;
+      int m_end_;
+      int m_body_length_;
+      //TODO 这里后期把buffer_处理下，这里暂时通过NonCopyable 禁用拷贝
+      char *m_buffer_;
 };
 #endif

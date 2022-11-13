@@ -37,47 +37,47 @@ const std::vector<std::string> request_header_v = {
 
 void HttpRequest::setMethod(HttpMethod method)
 {
-    this->method_ = method;
+    this->m_method_ = method;
 }
 void HttpRequest::setUrl(std::string &url)
 {
-    this->url_ = url;
+    this->m_url_ = url;
 }
 void HttpRequest::setHttpVersion(HttpVersion http_version)
 {
-    this->http_version_ = http_version;
+    this->m_http_version_ = http_version;
 }
 
 void HttpRequest::setHttpBody(std::string &http_body)
 {
-    this->body_ = http_body;
+    this->m_body_ = http_body;
 }
 
 HttpRequest::HttpMethod HttpRequest::getHttpMethod()
 {
-    return this->method_;
+    return this->m_method_;
 }
 std::string HttpRequest::getHttpUrl()
 {
-    return this->url_;
+    return this->m_url_;
 }
 HttpRequest::HttpVersion HttpRequest::getHttpVersion()
 {
-    return this->http_version_;
+    return this->m_http_version_;
 }
 std::string HttpRequest::getHttpBody()
 {
-    return this->body_;
+    return this->m_body_;
 }
 
 HttpRequest::
     HttpRequest()
-    : method_(HttpMethod::KMethodNotSupport), http_version_(HttpVersion::KVersionNotSupport), parseResult(ParseHttpRequest::HttpParseState::KParseLine)
+    : m_method_(HttpMethod::KMethodNotSupport), m_http_version_(HttpVersion::KVersionNotSupport), m_parseResult(ParseHttpRequest::HttpParseState::KParseLine)
 {
 }
 ParseHttpRequest::HttpParseState HttpRequest:: getParseResult()
 {
-    return parseResult;
+    return m_parseResult;
 }
 
 std::ostream &operator<<(std::ostream &out, const HttpRequest &httpRequest)
@@ -85,12 +85,12 @@ std::ostream &operator<<(std::ostream &out, const HttpRequest &httpRequest)
     // 这里如果把HttpVersion枚举定义成enum HttpVersion class{}
     // 这里的输出HttpVersion:就会产生no operator << match these operands 错误
     // 但是HttpMethod 却不会报错，很疑惑？
-    out << "method: " << httpRequest.method_ << "\turl: " << httpRequest.url_
-        << "\tHttpVersion: " << http_version_v[httpRequest.http_version_] << std::endl;
-    for (auto it : httpRequest.http_header_)
+    out << "method: " << httpRequest.m_method_ << "\turl: " << httpRequest.m_url_
+        << "\tHttpVersion: " << http_version_v[httpRequest.m_http_version_] << std::endl;
+    for (auto it : httpRequest.m_http_header_)
     {
         out << request_header_v[it.first] << ": " << it.second << std::endl;
     }
-    out << httpRequest.body_ << std::endl;
+    out << httpRequest.m_body_ << std::endl;
     return out;
 }

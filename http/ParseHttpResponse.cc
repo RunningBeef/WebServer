@@ -45,9 +45,9 @@ const std::string ParseHttpResponse::KKeyValueSeparate = ": ";
 const std::string ParseHttpResponse::KSpace = " ";
 
 ParseHttpResponse::
-    ParseHttpResponse(std::shared_ptr<HttpResponse> http_response_ptr, std::shared_ptr<ClientSocket> &client_ptr)
-    : client_ptr_(client_ptr),
-      http_response_ptr_(http_response_ptr)
+    ParseHttpResponse(std::shared_ptr<HttpResponse> &http_response_ptr, std::shared_ptr<ClientSocket> &client_ptr)
+    : m_client_ptr_(client_ptr),
+      m_http_response_ptr_(http_response_ptr)
 {
 }
 
@@ -77,28 +77,28 @@ std::string ParseHttpResponse::getFileType(std::string &url)
 // 不合适的http版本已经在ParseHttpRequest处理了
 void ParseHttpResponse::appendStateLine(std::shared_ptr<HttpResponse> &http_response_ptr_)
 {
-    http_response_ptr_->http_response_ += "HTTP/1.1" + KSpace + std::to_string(http_response_ptr_->statue_code_) + KSpace + HttpResponse::KStateCodeMap.find(http_response_ptr_->statue_code_)->second + KLineEnd;
+    http_response_ptr_->m_http_response_ += "HTTP/1.1" + KSpace + std::to_string(http_response_ptr_->m_statue_code_) + KSpace + HttpResponse::KStateCodeMap.find(http_response_ptr_->m_statue_code_)->second + KLineEnd;
 }
 
 void ParseHttpResponse::appendHeader(std::shared_ptr<HttpResponse> &http_response_ptr_)
 {
-    for (auto it : http_response_ptr_->response_header_map_)
+    for (auto it : http_response_ptr_->m_response_header_map_)
     {
-        http_response_ptr_->http_response_ +=
+        http_response_ptr_->m_http_response_ +=
             it.first + KKeyValueSeparate + it.second + KLineEnd;
     }
-    http_response_ptr_->http_response_ += KLineEnd;
+    http_response_ptr_->m_http_response_ += KLineEnd;
 }
 
 void ParseHttpResponse::appendBody(std::shared_ptr<HttpResponse> &http_response_ptr_)
 {
-    http_response_ptr_->http_response_ += http_response_ptr_->body_;
+    http_response_ptr_->m_http_response_ += http_response_ptr_->m_body_;
 }
 
 //后期可以扩展用其他方法写数据
 void ParseHttpResponse::writeResponse(std::shared_ptr<HttpResponse> &http_response_ptr_, std::shared_ptr<ClientSocket> &client_socket_ptr_)
 {
-    ::send(client_socket_ptr_->getClientSocket(), http_response_ptr_->http_response_.c_str(), http_response_ptr_->http_response_.size(), 0);
+    ::send(client_socket_ptr_->getClientSocket(), http_response_ptr_->m_http_response_.c_str(), http_response_ptr_->m_http_response_.size(), 0);
 }
 
 void ParseHttpResponse::parse(std::shared_ptr<HttpResponse> &http_response_ptr_, std::shared_ptr<ClientSocket> &client_socket_ptr_)

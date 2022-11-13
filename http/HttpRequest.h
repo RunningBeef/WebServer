@@ -88,11 +88,11 @@ public:
       std::string getHttpBody();
       ParseHttpRequest::HttpParseState getParseResult();
 private:
-      HttpMethod method_;
-      std::string url_;
-      HttpVersion http_version_;
-      std::string body_;
-      std::unordered_map<HttpRequestHeader, std::string> http_header_;
-      ParseHttpRequest::HttpParseState parseResult;
+      HttpMethod m_method_;
+      std::string m_url_;
+      HttpVersion m_http_version_;
+      std::string m_body_;
+      std::unordered_map<HttpRequestHeader, std::string> m_http_header_;
+      ParseHttpRequest::HttpParseState m_parseResult;
 };
 #endif

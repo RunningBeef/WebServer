@@ -16,11 +16,11 @@ const std::unordered_map<int, std::string>
 
 std::ostream &operator<<(std::ostream &out, const HttpResponse &httpResponse)
 {
-      out << "HttpVersion: " << httpResponse.http_version_
-          << "\tStatue_code: " << httpResponse.statue_code_
-          << "\tReason_phrase: " << HttpResponse::KStateCodeMap.find(httpResponse.statue_code_)->first
+      out << "HttpVersion: " << httpResponse.m_http_version_
+          << "\tStatue_code: " << httpResponse.m_statue_code_
+          << "\tReason_phrase: " << HttpResponse::KStateCodeMap.find(httpResponse.m_statue_code_)->first
           << std::endl;
-      for (auto it : httpResponse.response_header_map_)
+      for (auto it : httpResponse.m_response_header_map_)
       {
             out << it.first << ": " << it.second << std::endl;
       }

@@ -26,11 +26,11 @@ public:
       HttpResponse();
       ~HttpResponse() = default;
 private:
-      HttpRequest::HttpVersion http_version_;
-      int statue_code_;
-      std::unordered_map<std::string, std::string> response_header_map_;
-      std::string body_;
-      std::string http_response_;
+      HttpRequest::HttpVersion m_http_version_;
+      int m_statue_code_;
+      std::unordered_map<std::string, std::string> m_response_header_map_;
+      std::string m_body_;
+      std::string m_http_response_;
 };
 
 #endif
