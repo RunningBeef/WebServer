@@ -1,8 +1,22 @@
 #include<bits/stdc++.h>
 using namespace std;
-char str[20] = "hello";
-int main(){
-      shared_ptr<string> p;
 
-      cout << sizeof(p) << endl;
+class A{
+public:
+~A()
+{
+      cout << "Destroy ++" << endl;
+}
+public: int x;
+};
+void func(A & a)
+{
+      A &b = a;
+}
+
+int main()
+{
+      A a;
+      func(a);
+      return 0;
 }

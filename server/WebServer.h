@@ -1,6 +1,7 @@
 #ifndef WEBSERVER_H
 #define WEBSERVER_H
-class Webserver
+#include "../http/HttpData.h"
+class WebServer
 {
 
 };

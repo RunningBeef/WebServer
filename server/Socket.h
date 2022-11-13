@@ -1,17 +1,19 @@
 #ifndef SOCKET_H
 #define SOCKET_H
+#include "../locker/NonCopyable.h"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
 #include <assert.h>
+
 #define SND_BUF_SIZE 5120
 #define RCV_BUF_SIZE 1024
 
 class ClientSocket;
 
-class ServerSocket
+class ServerSocket : public NonCopyable
 {
 public:
       ServerSocket(const char *ip = NULL, int port = 80, int backlog = 1024);
@@ -31,7 +33,7 @@ private:
       // the port and ip address of sockaddr_in should be netWork byte order
 };
 
-class ClientSocket
+class ClientSocket : public NonCopyable
 {
       friend void ServerSocket::accept(ClientSocket &);
 

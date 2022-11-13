@@ -1,10 +1,24 @@
 #include "ParseHttpRequest.h"
 
 ParseHttpRequest::
-    ParseHttpRequest(std::shared_ptr<HttpRequest> http_request_ptr, int &end, char *buffer)
-    : http_request_ptr_(http_request_ptr), end_(end), buffer_(buffer)
+    ParseHttpRequest(std::shared_ptr<HttpRequest> http_request_ptr, std::shared_ptr<ClientSocket> client_socket_ptr)
+    : http_request_ptr_(http_request_ptr),
+      client_socket_ptr_(client_socket_ptr)
 {
-      body_length_ = uncheck_ = checked_ = 0;
+      init();
+      buffer_ = new char[BUFFERSIZE];
+}
+ParseHttpRequest::~ParseHttpRequest()
+{
+      if(buffer_)
+      {
+            delete buffer_;
+      }
+}
+void ParseHttpRequest::init()
+{
+      checked_ = uncheck_ = end_ = body_length_ = 0;
+      bzero(buffer_, BUFFERSIZE);
 }
 ParseHttpRequest::LineStatus ParseHttpRequest::
     parseOneLine()
@@ -152,11 +166,10 @@ void ParseHttpRequest::
 //使用ET
 bool ParseHttpRequest::parse()
 {
-      char buffer[BUFFERSIZE];
-      bzero(buffer, BUFFERSIZE);
+      init();
       while (true)
       {
-            int bytes_read = recv(client_ptr_->getClientSocket(), buffer + end_, BUFFERSIZE - end_, 0);
+            int bytes_read = recv(client_socket_ptr_->getClientSocket(), buffer_ + end_, BUFFERSIZE - end_, 0);
             if (bytes_read == -1)
             {
                   if (errno == EAGAIN || errno == EWOULDBLOCK)

@@ -9,12 +9,10 @@
 
 class HttpResponse
 {
-
       friend std::ostream &operator<<(std::ostream &out, const HttpResponse &httpResponse);
       friend ParseHttpResponse;
-
 public:
-
+      const static std::unordered_map<int, std::string> KStateCodeMap;
 
       enum class HttpResponseHeader
       {
@@ -27,12 +25,12 @@ public:
       };
       HttpResponse();
       ~HttpResponse() = default;
-      const static std::unordered_map<int, std::string> KStateCodeMap;
-      const static std::unordered_map<std::string, std::string> KFileTypeMap;
 private:
       HttpRequest::HttpVersion http_version_;
       int statue_code_;
       std::unordered_map<std::string, std::string> response_header_map_;
+      std::string body_;
+      std::string http_response_;
 };
 
 #endif
