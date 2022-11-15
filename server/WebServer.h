@@ -7,10 +7,9 @@
 class WebServer : public NonCopyable
 {
 public:
-      void do_request();
-      
+      void process(std::shared_ptr<HttpData>);
 private:
-      ThreadPool * m_thread_pool_ptr_;
+      ThreadPool<WebServer> * m_thread_pool_ptr_;
       TimerManager m_timer_manger_;
 };
 #endif
