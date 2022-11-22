@@ -1,0 +1,11 @@
+{
+      "ip":"127.0.0.1",
+      "port":3006,
+      "username":"root",
+      "password":"Apple38512",
+      "dbName":"userDb",
+      "minSize":100,
+      "maxSize":1024,
+      "maxIdleTime":5000,
+      "timeout":1000
+}

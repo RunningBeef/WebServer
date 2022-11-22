@@ -1,3 +1,11 @@
+/*
+ * @Author: RunningBeef 2723772192@qq.com
+ * @Date: 2022-11-08 12:12:29
+ * @LastEditors: RunningBeef 2723772192@qq.com
+ * @LastEditTime: 2022-11-22 19:51:48
+ * @FilePath: /lighthouse/WebServer/threadPool/ThreadPool.h
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 #ifndef THREADPOOL_H
 #define THREADPOOL_H
 
@@ -5,7 +13,6 @@
 #include "../locker/Mutex.h"
 #include <queue>
 #include <pthread.h>
-#include <exception>
 
 #define MAX_THREAD 65;
 
@@ -29,9 +36,10 @@ public:
       //这里直接抛出异常，不会调用析构函数，会造成内存泄漏,后期想办法修改下
       ~ThreadPool();
       bool append(T &);
-      static void worker(void *);
+      static void * worker(void *);
       // pthread_create()第三个参数必须指向一个静态函数，但是线程运行的函数是动态的
-      // http://c.biancheng.net/view/8607.html
+      // https://blog.csdn.net/mijichui2153/article/details/82855925
+      // https://blog.csdn.net/weixin_42316600/article/details/106485650
       void run();
 
 private:

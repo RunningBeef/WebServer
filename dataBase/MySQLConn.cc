@@ -1,3 +1,11 @@
+/*
+ * @Author: RunningBeef 2723772192@qq.com
+ * @Date: 2022-11-15 11:59:25
+ * @LastEditors: RunningBeef 2723772192@qq.com
+ * @LastEditTime: 2022-11-22 12:26:52
+ * @FilePath: /lighthouse/WebServer/dataBase/MySQLConn.cc
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 #include "MySQLConn.h"
 
 MySQLConn::MySQLConn()

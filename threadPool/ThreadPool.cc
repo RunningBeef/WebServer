@@ -1,3 +1,11 @@
+/*
+ * @Author: RunningBeef 2723772192@qq.com
+ * @Date: 2022-11-08 12:12:29
+ * @LastEditors: RunningBeef 2723772192@qq.com
+ * @LastEditTime: 2022-11-22 20:14:28
+ * @FilePath: /lighthouse/WebServer/threadPool/ThreadPool.cc
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 #include "ThreadPool.h"
 template <class T>
 ThreadPool<T>::
@@ -7,7 +15,7 @@ ThreadPool<T>::
 {
       if (thread_num_ <= 0 || max_request_ <= 0)
       {
-            throw std::exception();
+            return;
       }
       if (thread_num_ > MAX_THREAD)
       {
@@ -17,20 +25,16 @@ ThreadPool<T>::
       threads_ = new pthread_t[thread_num_];
       if (!threads_)
       {
-            throw std::exception();
+            return;
       }
       for (int i = 0; i < thread_num_; ++i)
       {
-            if (pthread_create(threads + i, NULL, worker, this))
+            if (pthread_create(threads + i, NULL, worker, this) || pthread_detach(threads + i))
             {
-                  throw ::exception();
-            }
-            if (pthread_detach(threads + i))
-            {
+                  shutdown_ = true;
                   // https://blog.csdn.net/qq_33883085/article/details/89425933
                   delete[] threads_;
-                  shutdown_ = true;
-                  throw ::exception();
+                  return;
             }
       }
 }
@@ -60,10 +64,12 @@ void ThreadPool<T>::run()
       {
             {
                   MutexGard mutexGard(queue_locker_);
-                  while (!request_condition_.wait() && !shutdown_)
+                  while (int ret = request_condition_.wait() && !shutdown_)
                   {
                         if (!request_queue_.empty())
                               break;
+                        if (ret)
+                              return;
                   }
                   if (shutdown_)
                         return;
@@ -75,7 +81,7 @@ void ThreadPool<T>::run()
 }
 
 template <class T>
-void ThreadPool<T>::worker(void *arg)
+void *ThreadPool<T>::worker(void *arg)
 {
       ThreadPool *pool = (ThreadPool *)arg;
       pool->run();
@@ -86,4 +92,5 @@ ThreadPool<T>::~ThreadPool()
 {
       if (threads_)
             delete[] threads_;
+      shutdown_ = true;
 }

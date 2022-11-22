@@ -2,9 +2,9 @@
  * @Author: RunningBeef 2723772192@qq.com
  * @Date: 2022-11-15 11:40:20
  * @LastEditors: RunningBeef 2723772192@qq.com
- * @LastEditTime: 2022-11-19 22:30:25
+ * @LastEditTime: 2022-11-22 21:23:00
  * @FilePath: /lighthouse/WebServer/dataBase/MySQLConn.h
- * @Description: this is a mysql connection pool
+ * @Description: this is a mysql connection
  */
 #ifndef MYSQLCONN_H
 #define MYSQLCONN_H
@@ -33,12 +33,17 @@ public:
       bool commit();
       //事物回滚
       bool rollback();
+      //刷新起始空闲时间点
+      void refreshAliveTime();
+      //返回空闲时长
+      long long getIdleTime();
 private:
       //释放结果集内存地址 注意内部维护，否则有内存泄漏
       void freeResult();
       MYSQL * m_conn = nullptr;
       MYSQL_RES * m_result = nullptr;
       MYSQL_ROW m_row = nullptr;//本身是个二级指针
+      steady_clock
 };
 
 #endif
