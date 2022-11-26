@@ -2,7 +2,7 @@
  * @Author: RunningBeef 2723772192@qq.com
  * @Date: 2022-11-20 18:22:03
  * @LastEditors: RunningBeef 2723772192@qq.com
- * @LastEditTime: 2022-11-26 16:59:38
+ * @LastEditTime: 2022-11-26 22:41:58
  * @FilePath: /lighthouse/WebServer/dataBase/ConnectionPool.cc
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -11,6 +11,7 @@ ConnectionPool::ConnectionPool() : m_produce_condition(m_mutex), m_consume_condi
 {
       if (!parseJsonFile())
       {
+            std::cerr << __FILE__ << __LINE__ << " parseJsonFile failed" << std::endl;
             return;
       }
       for (int i = 0; i < m_min_size; ++i)
@@ -27,6 +28,9 @@ ConnectionPool::ConnectionPool() : m_produce_condition(m_mutex), m_consume_condi
             m_shutdown = true;
             return;
       }
+#ifdef DEBUG
+      std::cout << __FILE__ << __LINE__ << "ConnectionPool construct success" << std::endl;
+#endif
 }
 ConnectionPool::~ConnectionPool()
 {
@@ -44,7 +48,7 @@ ConnectionPool::~ConnectionPool()
       m_produce_condition.broadCast();
       m_consume_condition.broadCast();
 #ifdef DEBUG
-      std::cout << "ConnectionPool destroy success" << std::endl;
+      std::cout << __FILE__ << __LINE__ << "ConnectionPool destroy success" << std::endl;
 #endif
 }
 ConnectionPool *
@@ -57,7 +61,11 @@ ConnectionPool::getConnectionPool()
 
 bool ConnectionPool::parseJsonFile()
 {
-      std::ifstream json_file("MySQLConf.json");
+      std::ifstream json_file("/home/lighthouse/WebServer/database/MySQLConf.json");
+      if (json_file.fail())
+      {
+            std::cerr << __FILE__ << __LINE__ << "mysql configuration file error" << std::endl;
+      }
       Json::Reader rd;
       Json::Value root;
       rd.parse(json_file, root);
@@ -74,11 +82,21 @@ bool ConnectionPool::parseJsonFile()
             m_timeout = root["timeout"].asInt64();
             return true;
       }
-      if (m_min_size <= 0 || m_max_size < m_min_size)
+      else
       {
+#ifdef DEBUG
+            std::cout << __FILE__ << __LINE__ << "could not get json object" << std::endl;
+#endif // DEBUG
             return false;
       }
-      return false;
+      if (m_min_size <= 0 || m_max_size < m_min_size)
+      {
+#ifdef DEBUG
+            std::cout << __FILE__ << __LINE__ << "mysql connection size set error " << std::endl;
+#endif // DEBUG
+            return false;
+      }
+      return true;
 }
 
 //维护连接池中可用连接的个数，如果被唤醒并且连接不足就生产
@@ -88,17 +106,22 @@ void *ConnectionPool::produceConnection(void *arg)
       while (true)
       {
             MutexGard mutex_gard(conn_pool_ptr->m_mutex);
-            while (conn_pool_ptr->m_connectionQ.size() >= conn_pool_ptr->m_min_size && !conn_pool_ptr->m_shutdown)
+            while (conn_pool_ptr->m_connectionQ.size() && !conn_pool_ptr->m_shutdown)
             {
+#ifdef DEBUG
+                  std::cout << "produce" << std::endl;
+#endif // DEBUG
                   conn_pool_ptr->m_produce_condition.wait();
+                  if (conn_pool_ptr->m_connectionQ.size())
+                  {
+                        conn_pool_ptr->m_consume_condition.broadCast();
+                  }
             }
             if (conn_pool_ptr->m_shutdown)
                   return nullptr;
-            int produce_num = conn_pool_ptr->m_connectionQ.size() > 4 ? 1 : 3;
-            while (produce_num--)
-            {
-                  conn_pool_ptr->addConnection();
-            }
+
+            conn_pool_ptr->addConnection();
+
             conn_pool_ptr->m_consume_condition.broadCast();
       }
 }
@@ -109,22 +132,28 @@ void *ConnectionPool::recycleConnection(void *arg)
       ConnectionPool *conn_pool_ptr = (ConnectionPool *)arg;
       while (true)
       {
-            sleep(1);
-            MutexGard mutex_gard(conn_pool_ptr->m_mutex);
-            int max_release_num = 500;
-            while (conn_pool_ptr->m_connectionQ.size() > conn_pool_ptr->m_max_size && !conn_pool_ptr->m_shutdown && max_release_num--)
+            sleep(3);
             {
-
-                  MySQLConn *conn = conn_pool_ptr->m_connectionQ.front();
-                  if (conn->getIdleTime() > conn_pool_ptr->m_max_idle_time)
+                  MutexGard mutex_gard(conn_pool_ptr->m_mutex);
+                  int max_release_num = 500;
+                  while (conn_pool_ptr->m_connectionQ.size() > conn_pool_ptr->m_max_size && !conn_pool_ptr->m_shutdown && max_release_num--)
                   {
-                        conn_pool_ptr->m_connectionQ.pop();
-                        delete conn;
+#ifdef DEBUG
+                        std::cout << "recycle" << std::endl;
+#endif // DEBUG
+                        MySQLConn *conn = conn_pool_ptr->m_connectionQ.front();
+                        if (conn->getIdleTime() > conn_pool_ptr->m_max_idle_time)
+                        {
+                              conn_pool_ptr->m_connectionQ.pop();
+                              delete conn;
+                        }
+                        else
+                              break;
                   }
-            }
-            if (conn_pool_ptr->m_shutdown)
-            {
-                  return nullptr;
+                  if (conn_pool_ptr->m_shutdown)
+                  {
+                        return nullptr;
+                  }
             }
       }
 }
@@ -134,10 +163,14 @@ void ConnectionPool::addConnection()
       MySQLConn *conn = new MySQLConn;
       if (!conn->connect(m_username, m_password, m_db_name, m_ip, m_port))
       {
+            std::cerr << __FILE__ << __LINE__ << "mysql connect error" << std::endl;
             return;
       }
       conn->refreshAliveTime();
       m_connectionQ.push(conn);
+#ifdef DEBUG
+      std::cout << __FILE__ << __LINE__ << "addConnection success" << std::endl;
+#endif
 }
 
 //为什么是用broadcast要注意
@@ -148,6 +181,9 @@ std::shared_ptr<MySQLConn> ConnectionPool::getConnection()
       MutexGard mutex_gard(m_mutex);
       while (m_connectionQ.empty())
       {
+#ifdef DEBUG
+            std::cout << "connection not enough" << std::endl;
+#endif // DEBUG
             m_produce_condition.signal();
             m_consume_condition.wait();
       }
