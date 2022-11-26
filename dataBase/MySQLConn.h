@@ -2,14 +2,17 @@
  * @Author: RunningBeef 2723772192@qq.com
  * @Date: 2022-11-15 11:40:20
  * @LastEditors: RunningBeef 2723772192@qq.com
- * @LastEditTime: 2022-11-22 21:23:00
+ * @LastEditTime: 2022-11-25 11:30:36
  * @FilePath: /lighthouse/WebServer/dataBase/MySQLConn.h
  * @Description: this is a mysql connection
  */
 #ifndef MYSQLCONN_H
 #define MYSQLCONN_H
 #include <string>
+#include <iostream>
 #include <mysql/mysql.h>
+#include <sys/time.h>
+
 class MySQLConn{
 public:
       //初始化数据库连接 构造
@@ -36,14 +39,14 @@ public:
       //刷新起始空闲时间点
       void refreshAliveTime();
       //返回空闲时长
-      long long getIdleTime();
+      size_t getIdleTime();
 private:
       //释放结果集内存地址 注意内部维护，否则有内存泄漏
       void freeResult();
       MYSQL * m_conn = nullptr;
       MYSQL_RES * m_result = nullptr;
       MYSQL_ROW m_row = nullptr;//本身是个二级指针
-      steady_clock
+      size_t m_alive_time;
 };
 
 #endif

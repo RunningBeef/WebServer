@@ -1,11 +1,11 @@
 {
-      "ip":"127.0.0.1",
+      "ip":"localhost",
       "port":3006,
       "username":"root",
       "password":"Apple38512",
-      "dbName":"userDb",
-      "minSize":100,
-      "maxSize":1024,
+      "dbName":"webServer",
+      "minSize":500,
+      "maxSize":5096,
       "maxIdleTime":5000,
       "timeout":1000
 }

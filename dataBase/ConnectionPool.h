@@ -2,7 +2,7 @@
  * @Author: RunningBeef 2723772192@qq.com
  * @Date: 2022-11-20 18:22:32
  * @LastEditors: RunningBeef 2723772192@qq.com
- * @LastEditTime: 2022-11-22 20:06:05
+ * @LastEditTime: 2022-11-25 18:28:36
  * @FilePath: /lighthouse/WebServer/dataBase/ConnectionPool.h
  * @Description: this is a singleton mysql connection pool
  */
@@ -12,6 +12,7 @@
 #include <fstream>
 #include <pthread.h>
 #include <unistd.h>
+#include <memory.h>
 #include "MySQLConn.h"
 #include "../locker/Mutex.h"
 #include "../locker/Condition.h"
@@ -26,14 +27,13 @@ public:
 
       ConnectionPool &operator=(const ConnectionPool &obj) = delete;
       ConnectionPool &operator=(ConnectionPool &&obj) noexcept = delete;
-
+      std::shared_ptr<MySQLConn> getConnection();
 private:
       ConnectionPool();
       bool parseJsonFile();
       static void *produceConnection(void *);
       static void *recycleConnection(void *);
       void addConnection();
-
       pthread_t m_produce_id;
       pthread_t m_recycle_id;
       bool m_shutdown;
@@ -48,6 +48,7 @@ private:
       int m_max_idle_time; //连接空闲的时长，超过该时长连接被释放
       std::queue<MySQLConn *> m_connectionQ;
       Mutex m_mutex;         //保护m_connection_queue;
-      Condition m_condition; //生产者消费者协同
+      Condition m_produce_condition; //生产者消费者协同
+      Condition m_consume_condition;
 };
 #endif

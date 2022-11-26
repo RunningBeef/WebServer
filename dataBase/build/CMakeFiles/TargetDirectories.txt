@@ -1,0 +1,3 @@
+/home/lighthouse/WebServer/dataBase/build/CMakeFiles/rebuild_cache.dir
+/home/lighthouse/WebServer/dataBase/build/CMakeFiles/TestMySQL.dir
+/home/lighthouse/WebServer/dataBase/build/CMakeFiles/edit_cache.dir
