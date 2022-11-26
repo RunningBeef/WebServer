@@ -1,4 +1,4 @@
-# Install script for directory: /home/yonggeng/web_Debug_Vs
+# Install script for directory: /home/lighthouse/WebServer
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/yonggeng/web_Debug_Vs/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/lighthouse/WebServer/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
